@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="handleEvent"
+            type="com.example.prm392_android_project.actionbindings.ChangeTaskColumnEvent" />
+        <variable
+            name="task"
+            type="com.example.prm392_android_project.models.GroupTask" />
+    </data>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:background="@drawable/task_item_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/task_title"
+        android:layout_width="200dp"
+        android:layout_height="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="@{task.title}"/>
+
+    <TextView
+        android:id="@+id/task_point"
+        android:layout_width="50dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintTop_toTopOf="@id/task_title"
+        app:layout_constraintStart_toEndOf="@id/task_title"
+        android:background="@drawable/task_point_background"
+        android:text="@{task.points}"/>
+
+    <ImageView
+        android:id="@+id/move_to_doing_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_move_to_right_column"
+        app:layout_constraintTop_toTopOf="@id/task_point"
+        app:layout_constraintStart_toEndOf="@id/task_point"
+        android:layout_marginStart="20dp"/>
+    <ImageView
+        android:id="@+id/remove_task_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_trash_bin"
+        app:layout_constraintTop_toTopOf="@id/task_point"
+        app:layout_constraintStart_toEndOf="@id/move_to_doing_btn"
+        android:layout_marginStart="20dp"/>
+    <TextView
+        android:id="@+id/task_assigned_to"
+        android:layout_width="320dp"
+        android:layout_height="24dp"
+        app:layout_constraintTop_toTopOf="@id/task_title"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="32dp"
+        android:text="@{task.assignedToName}"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
