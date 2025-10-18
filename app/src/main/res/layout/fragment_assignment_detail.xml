@@ -5,22 +5,30 @@
     android:layout_height="match_parent"
     tools:context=".views.AssignmentDetailFragment">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Assignment Detail"
+        android:textColor="@android:color/black"/>
     <!-- TODO: Update blank fragment layout -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/todo_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="40dp"
+        android:background="@drawable/task_column_background"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/doing_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:layout_marginTop="270dp"/>
+        android:layout_marginTop="270dp"
+        android:background="@drawable/task_column_background"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/done_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:layout_marginTop="500dp"/>
+        android:layout_marginTop="500dp"
+        android:background="@drawable/task_column_background"/>
 
 </FrameLayout>
