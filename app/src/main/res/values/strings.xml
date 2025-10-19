@@ -5,4 +5,7 @@
     <string name="forget_link">
         <u>Forget Password</u>
     </string>
+    <string name="login_link">
+        <u>LOGIN</u>
+    </string>
 </resources>
