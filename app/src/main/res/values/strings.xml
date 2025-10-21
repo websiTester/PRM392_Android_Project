@@ -5,4 +5,33 @@
     <string name="forget_link">
         <u>Forget Password</u>
     </string>
+    <string name="login_link">
+        <u>LOGIN</u>
+    </string>
+
+
+    <string name="login">Đăng nhập</string>
+    <string name="register">Đăng ký</string>
+
+    <!-- Hero Section -->
+    <string name="welcome_to">Chào mừng đến với</string>
+    <string name="viroom_brand">Viroom</string>
+    <string name="hero_subtitle">Nền tảng học tập trực tuyến hiện đại, giúp bạn kết nối và học tập mọi lúc mọi nơi.</string>
+    <string name="start_now">Bắt đầu ngay</string>
+
+    <!-- Features Section -->
+    <string name="why_choose_viroom">Tại sao chọn VIROOM</string>
+    <string name="feature_1_title">Dạy &amp; học dễ dàng</string>
+    <string name="feature_1_desc">Kết nối học viên và giảng viên trong không gian trực tuyến mượt mà, dễ sử dụng.</string>
+    <string name="feature_2_title">Kết nối cộng đồng</string>
+    <string name="feature_2_desc">Tham gia nhóm học tập, thảo luận và chia sẻ kiến thức với bạn bè.</string>
+    <string name="feature_3_title">An toàn &amp; bảo mật</string>
+    <string name="feature_3_desc">Dữ liệu cá nhân và lớp học được bảo vệ bằng công nghệ bảo mật tiên tiến.</string>
+
+    <!-- CTA Section -->
+    <string name="cta_title">Sẵn sàng bắt đầu hành trình học tập cùng Viroom?</string>
+    <string name="register_now">Đăng ký ngay</string>
+
+    <!-- Footer -->
+    <string name="footer_text">© 2025 Viroom. All rights reserved.</string>
 </resources>

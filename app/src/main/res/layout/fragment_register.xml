@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.LoginFragment"
+    tools:context=".views.RegisterFragment"
     android:background="@drawable/login1_background">
 
     <ImageView
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="MEMBER LOGIN"
+        android:text="MEMBER REGISTER"
         android:textColor="@drawable/login1_link_state"
         android:textSize="24dp"
 
@@ -57,59 +57,71 @@
         app:layout_constraintStart_toStartOf="@+id/edtUsername"
         app:layout_constraintTop_toBottomOf="@+id/edtUsername" />
 
+    <EditText
+        android:id="@id/edtConfirmPassword"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/login1_input_background"
+        android:hint="Confirm Password"
+        android:textColorHint="#8FB6B0"
+        android:textSize="20dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/edtPassword"
+        app:layout_constraintStart_toStartOf="@+id/edtPassword"
+        app:layout_constraintTop_toBottomOf="@+id/edtPassword" />
+
+    <RadioGroup
+        android:id="@+id/rdoRole"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/edtConfirmPassword"
+        app:layout_constraintStart_toStartOf="@+id/edtConfirmPassword"
+        app:layout_constraintTop_toBottomOf="@+id/edtConfirmPassword">
+
+        <RadioButton
+            android:id="@+id/rdoTeacher"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Teacher"
+            android:layout_weight="1"
+            android:checked="true"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:layout_weight="1"
+            android:id="@+id/rdoStudent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Student"
+            android:textColor="@color/white" />
+    </RadioGroup>
+
     <TextView
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRegister"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@drawable/button1_text_state"
-        android:text="Login"
+        android:text="Register"
         android:textSize="20dp"
         android:background="@drawable/login1_button_state"
-        app:layout_constraintEnd_toEndOf="@+id/edtPassword"
-        app:layout_constraintStart_toStartOf="@+id/edtPassword"
-        app:layout_constraintTop_toBottomOf="@+id/edtPassword"
+        app:layout_constraintEnd_toEndOf="@+id/rdoRole"
+        app:layout_constraintStart_toStartOf="@+id/rdoRole"
+        app:layout_constraintTop_toBottomOf="@+id/rdoRole"
         android:layout_marginTop="20dp"/>
-
-    <CheckBox
-
-        android:id="@+id/cbRemember"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Remember me"
-        app:layout_constraintStart_toStartOf="@+id/btnLogin"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin"
-        android:layout_marginTop="20dp"
-        android:checked="true"
-        android:button="@drawable/login1_checkbox_state"
-        android:textColor="@color/white"
-        android:textSize="16dp"
-        app:buttonTint="@null"
-        />
 
     <TextView
         android:id="@+id/txtLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:textSize="16dp"
-        android:text="@string/forget_link"
+        android:text="@string/login_link"
         android:textColor="@drawable/login1_link_state"
-        app:layout_constraintBottom_toBottomOf="@+id/cbRemember"
-        app:layout_constraintEnd_toEndOf="@+id/btnLogin"
-        app:layout_constraintTop_toTopOf="@+id/cbRemember" />
-
-    <TextView
-        android:id="@+id/btnRegister"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/login1_button_state"
-        android:gravity="center"
-        android:text="Register"
-        android:layout_marginTop="20dp"
-        android:textColor="@drawable/button1_text_state"
         android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/txtLink"
-        app:layout_constraintStart_toStartOf="@+id/cbRemember"
-        app:layout_constraintTop_toBottomOf="@+id/cbRemember" />
+        app:layout_constraintEnd_toEndOf="@+id/btnRegister"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/btnRegister"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
 </androidx.constraintlayout.widget.ConstraintLayout>
