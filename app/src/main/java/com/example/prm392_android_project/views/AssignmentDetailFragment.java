@@ -1,15 +1,14 @@
 package com.example.prm392_android_project.views;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.prm392_android_project.R;
 import com.example.prm392_android_project.recyclerviewadapter.TaskRecyclerViewAdapter;
@@ -18,11 +17,10 @@ import com.example.prm392_android_project.viewmodels.AssignmentDetailViewModel;
 public class AssignmentDetailFragment extends Fragment {
 
     private RecyclerView todoRecyclerView;
-    private  RecyclerView doingRecyclerView;
-    private  RecyclerView doneRecyclerView;
+    private RecyclerView doingRecyclerView;
+    private RecyclerView doneRecyclerView;
     private TaskRecyclerViewAdapter adapter;
     private AssignmentDetailViewModel viewModel;
-
 
 
     public AssignmentDetailFragment() {
@@ -49,14 +47,26 @@ public class AssignmentDetailFragment extends Fragment {
         doneRecyclerView = view.findViewById(R.id.done_recycler_view);
 
 
-        viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), groupTasks -> {
-                    adapter = new TaskRecyclerViewAdapter(groupTasks);
-                    todoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    todoRecyclerView.setAdapter(adapter);
-                }
-        );
+        viewModel.getTodoGroupTaskLiveData().observe(getViewLifecycleOwner(), groupTasks -> {
+            adapter = new TaskRecyclerViewAdapter(groupTasks);
+            todoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            todoRecyclerView.setAdapter(adapter);
+        });
 
-        return view ;
+        viewModel.getInProgressGroupTaskLiveData().observe(getViewLifecycleOwner(), groupTasks -> {
+            adapter = new TaskRecyclerViewAdapter(groupTasks);
+            doingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            doingRecyclerView.setAdapter(adapter);
+        });
+
+        viewModel.getDoneGroupTaskLiveData().observe(getViewLifecycleOwner(), groupTasks -> {
+            adapter = new TaskRecyclerViewAdapter(groupTasks);
+            doneRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            doneRecyclerView.setAdapter(adapter);
+        });
+
+
+        return view;
     }
 
 }
