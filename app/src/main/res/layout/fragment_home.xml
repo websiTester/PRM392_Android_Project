@@ -16,8 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:background="@drawable/border_bottom"> <!-- Bạn cần tạo border_bottom.xml hoặc set elevation -->
+            android:padding="16dp"> <!-- Bạn cần tạo border_bottom.xml hoặc set elevation -->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -61,6 +60,7 @@
             android:padding="24dp"
             android:gravity="center">
 
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,6 +75,12 @@
                 android:textColor="@color/colorWarning"
                 android:textSize="34sp"
                 android:textStyle="bold" />
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/class_image"
+                android:adjustViewBounds="true"
+                android:layout_marginTop="24dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -105,12 +111,7 @@
                 android:layout_marginTop="12dp"
                 android:paddingVertical="12dp"/>
 
-            <ImageView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/class_image"
-                android:adjustViewBounds="true"
-                android:layout_marginTop="24dp"/>
+
         </LinearLayout>
 
         <!-- ===== FEATURES SECTION ===== -->
