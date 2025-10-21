@@ -6,29 +6,52 @@
     tools:context=".views.AssignmentDetailFragment">
 
     <TextView
+        android:id="@+id/assignment_detail_title"
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_marginStart="10dp"
         android:text="Assignment Detail"
         android:textColor="@android:color/black"/>
     <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_marginTop="80dp"
+        android:layout_marginStart="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="To do :"
+        android:textColor="@android:color/black"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/todo_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="100dp"
         android:background="@drawable/task_column_background"/>
+    <TextView
+        android:layout_marginTop="295dp"
+        android:layout_marginStart="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="Doing :"
+        android:textColor="@android:color/black"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/doing_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:layout_marginTop="270dp"
+        android:layout_marginTop="320dp"
         android:background="@drawable/task_column_background"/>
-
+    <TextView
+        android:layout_marginTop="520dp"
+        android:layout_marginStart="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="Done :"
+        android:textColor="@android:color/black"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/done_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:layout_marginTop="500dp"
+        android:layout_marginTop="540dp"
         android:background="@drawable/task_column_background"/>
 
 </FrameLayout>
