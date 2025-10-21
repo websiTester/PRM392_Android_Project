@@ -9,12 +9,12 @@ public class TeacherHomeResponse {
     private int teacherId;
 
     @SerializedName("classes")
-    private List<ClassListDto> classes;
+    private List<ClassItem> classes;
 
     @SerializedName("allCourses")
-    private List<CourseDto> allCourses;
+    private List<CourseItem> allCourses;
 
-    public TeacherHomeResponse(int teacherId, List<ClassListDto> classes, List<CourseDto> allCourses) {
+    public TeacherHomeResponse(int teacherId, List<ClassItem> classes, List<CourseItem> allCourses) {
         this.teacherId = teacherId;
         this.classes = classes;
         this.allCourses = allCourses;
@@ -28,19 +28,19 @@ public class TeacherHomeResponse {
         this.teacherId = teacherId;
     }
 
-    public List<ClassListDto> getClasses() {
+    public List<ClassItem> getClasses() {
         return classes;
     }
 
-    public void setClasses(List<ClassListDto> classes) {
+    public void setClasses(List<ClassItem> classes) {
         this.classes = classes;
     }
 
-    public List<CourseDto> getAllCourses() {
+    public List<CourseItem> getAllCourses() {
         return allCourses;
     }
 
-    public void setAllCourses(List<CourseDto> allCourses) {
+    public void setAllCourses(List<CourseItem> allCourses) {
         this.allCourses = allCourses;
     }
 }

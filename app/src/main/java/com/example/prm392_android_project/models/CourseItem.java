@@ -1,11 +1,11 @@
 package com.example.prm392_android_project.models;
 
-public class CourseDto {
+public class CourseItem {
 
     private int id;
     private String name;
 
-    public CourseDto(int id, String name) {
+    public CourseItem(int id, String name) {
         this.id = id;
         this.name = name;
     }

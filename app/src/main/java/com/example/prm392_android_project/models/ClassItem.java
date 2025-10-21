@@ -2,7 +2,7 @@ package com.example.prm392_android_project.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ClassListDto {
+public class ClassItem {
 
 
     @SerializedName("classId")
@@ -19,7 +19,7 @@ public class ClassListDto {
     @SerializedName("classCode")
     private String classCode;
 
-    public ClassListDto(int classId, String className, String courseName, String teacherFullName, String classCode) {
+    public ClassItem(int classId, String className, String courseName, String teacherFullName, String classCode) {
         this.classId = classId;
         this.className = className;
         this.courseName = courseName;
