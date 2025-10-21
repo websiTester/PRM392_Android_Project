@@ -7,4 +7,12 @@
     <color name="green">#00FF00</color>
     <color name="red">#FF0000</color>
     <color name="blue">#FF3700B3</color>
+
+    <color name="colorPrimary">#6366F1</color>
+    <color name="colorPrimaryDark">#4F46E5</color>
+    <color name="colorAccent">#8B5CF6</color>
+    <color name="colorWarning">#FFC107</color> <!-- Gần giống màu text-warning -->
+    <color name="colorSuccess">#198754</color> <!-- Gần giống màu text-success -->
+    <color name="light_gray_background">#F8F9FA</color> <!-- Màu của bg-light -->
+    <color name="text_dark">#212529</color>
 </resources>
