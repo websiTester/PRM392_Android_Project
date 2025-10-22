@@ -1,57 +1,87 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.AssignmentDetailFragment">
 
-    <TextView
-        android:id="@+id/assignment_detail_title"
-        android:layout_marginTop="50dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="10dp"
-        android:text="Assignment Detail"
-        android:textColor="@android:color/black"/>
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_marginTop="80dp"
-        android:layout_marginStart="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:text="To do :"
-        android:textColor="@android:color/black"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/todo_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:layout_marginTop="100dp"
-        android:background="@drawable/task_column_background"/>
-    <TextView
-        android:layout_marginTop="295dp"
-        android:layout_marginStart="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:text="Doing :"
-        android:textColor="@android:color/black"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/doing_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:layout_marginTop="320dp"
-        android:background="@drawable/task_column_background"/>
-    <TextView
-        android:layout_marginTop="520dp"
-        android:layout_marginStart="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:text="Done :"
-        android:textColor="@android:color/black"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/done_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:layout_marginTop="540dp"
-        android:background="@drawable/task_column_background"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/assignment_detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Assignment Detail"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:paddingVertical="8dp" />
+        <Button
+            android:id="@+id/add_task_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@null"
+            android:text="Add Task"
+            android:background="@drawable/task_column_background"/>
+
+        <!-- To do -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="To do:"
+            android:textColor="@android:color/black"
+            android:paddingVertical="4dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/todo_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/task_column_background" />
+
+        <!-- Doing -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Doing:"
+            android:textColor="@android:color/black"
+            android:paddingVertical="4dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/doing_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/task_column_background" />
+
+        <!-- Done -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Done:"
+            android:textColor="@android:color/black"
+            android:paddingVertical="4dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/done_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/task_column_background" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/chart1"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="36dp"
+            android:layout_above="@+id/seekBar1" />
+
+
+    </LinearLayout>
+</ScrollView>

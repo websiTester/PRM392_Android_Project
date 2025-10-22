@@ -1,11 +1,21 @@
 package com.example.prm392_android_project.models;
 
+import androidx.annotation.Nullable;
+
 public class GroupTask {
     private int taskId;
     private String title;
     private String status;
     private int points;
     private String assignedToName;
+    private int groupId;
+    private int assignmentId;
+    private int assignedToId;
+
+
+
+    public GroupTask() {
+    }
 
     public GroupTask(int taskId, String title, String status, int points, String assignedToName) {
         this.taskId = taskId;
@@ -53,5 +63,37 @@ public class GroupTask {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public int getAssignmentId() {
+        return assignmentId;
+    }
+
+    public void setAssignmentId(int assignmentId) {
+        this.assignmentId = assignmentId;
+    }
+
+    public int getAssignedToId() {
+        return assignedToId;
+    }
+
+    public void setAssignedToId(int assignedToId) {
+        this.assignedToId = assignedToId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        GroupTask groupTask = (GroupTask) obj;
+        return status.equals(groupTask.getStatus());
     }
 }

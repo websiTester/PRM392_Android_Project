@@ -28,6 +28,30 @@ public class AssignmentDetailViewModel extends ViewModel {
     private final GroupTaskAPI retrofitAPI = retrofit.create(GroupTaskAPI.class);
     private final CompositeDisposable mCompositeDisposable;
     private final MutableLiveData<List<GroupTask>> groupTaskLiveData = new MutableLiveData<>();
+    private final MutableLiveData<GroupTask> addingGroupTask = new MutableLiveData<>();
+
+    public MutableLiveData<GroupTask> getAddingGroupTask() {
+        return addingGroupTask;
+    }
+    public void initialSetGroupIdAndAssignmentIdToaddingGroupTask(int groupId, int assignmentId) {
+        GroupTask groupTask = new GroupTask();
+        groupTask.setGroupId(groupId);
+        groupTask.setAssignmentId(assignmentId);
+        addingGroupTask.setValue(groupTask);
+    }
+
+    public void laterSetDataToaddingGroupTask(String title, int points, int assignedToId) {
+        GroupTask groupTask = addingGroupTask.getValue();
+        if (groupTask != null) {
+            groupTask.setTitle(title);
+            groupTask.setPoints(points);
+            groupTask.setAssignedToId(assignedToId);
+        }
+        Log.d("aaaaaaa", groupTask.toString());
+        addingGroupTask.setValue(groupTask);
+    }
+
+
     public AssignmentDetailViewModel() {
         mCompositeDisposable = new CompositeDisposable();
         fetchGroupTasks();
@@ -86,6 +110,7 @@ public class AssignmentDetailViewModel extends ViewModel {
                 .subscribe(
                         // onComplete
                         () -> {
+                            fetchGroupTasks();
                             Log.d("ChangeTaskStatus", "Task status updated successfully");
                         },
                         // onError
