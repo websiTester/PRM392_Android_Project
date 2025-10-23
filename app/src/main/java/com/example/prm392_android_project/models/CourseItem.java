@@ -2,12 +2,35 @@ package com.example.prm392_android_project.models;
 
 public class CourseItem {
 
+
+
     private int id;
     private String name;
 
-    public CourseItem(int id, String name) {
+    private  String description;
+
+    public CourseItem(int id, String name, String description) {
         this.id = id;
         this.name = name;
+        this.description = description;
+    }
+
+    public CourseItem(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return  name;
     }
 
     public int getId() {
