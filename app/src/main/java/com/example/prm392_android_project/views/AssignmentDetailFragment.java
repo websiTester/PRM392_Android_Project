@@ -130,7 +130,7 @@ public class AssignmentDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.add_task_btn).setOnClickListener(view1 -> {
-            CreateTaskDialogFragment dialog = CreateTaskDialogFragment.newInstance();
+            CreateTaskDialogFragment dialog = CreateTaskDialogFragment.newInstance(groupId);
             dialog.show(getParentFragmentManager(), CreateTaskDialogFragment.TAG);
         });
         setData();

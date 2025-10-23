@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view.getId() == R.id.test_assignment_detail) {
             view.findViewById(R.id.test_assignment_detail).setVisibility(GONE);
 
-            AssignmentDetailFragment fragment = new AssignmentDetailFragment();
+            AssignmentDetailFragment fragment = AssignmentDetailFragment.newInstance("2","2");
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
     }
