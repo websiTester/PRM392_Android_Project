@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.example.prm392_android_project.dtos.AddGroupTaskRequest;
 import com.example.prm392_android_project.models.GroupTask;
 import com.example.prm392_android_project.retrofit.API.GroupTaskAPI;
 import com.example.prm392_android_project.retrofit.Client.RetrofitClient;
@@ -37,24 +38,15 @@ public class AssignmentDetailViewModel extends ViewModel {
         GroupTask groupTask = new GroupTask();
         groupTask.setGroupId(groupId);
         groupTask.setAssignmentId(assignmentId);
+        groupTask.setPoints(0);
+        groupTask.setTitle("");
         addingGroupTask.setValue(groupTask);
+        fetchGroupTasks(assignmentId,groupId);
     }
-
-    public void laterSetDataToaddingGroupTask(String title, int points, int assignedToId) {
-        GroupTask groupTask = addingGroupTask.getValue();
-        if (groupTask != null) {
-            groupTask.setTitle(title);
-            groupTask.setPoints(points);
-            groupTask.setAssignedToId(assignedToId);
-        }
-        Log.d("aaaaaaa", groupTask.toString());
-        addingGroupTask.setValue(groupTask);
-    }
-
 
     public AssignmentDetailViewModel() {
         mCompositeDisposable = new CompositeDisposable();
-        fetchGroupTasks();
+
     }
     public LiveData<List<GroupTask>> getTodoGroupTaskLiveData() {
         return Transformations.map(groupTaskLiveData, input -> {
@@ -82,8 +74,34 @@ public class AssignmentDetailViewModel extends ViewModel {
     }
 
 
-    public void fetchGroupTasks() {
-        Disposable disposable = retrofitAPI.getGroupTasks()
+    public void addGroupTask() {
+        GroupTask groupTask = addingGroupTask.getValue();
+        AddGroupTaskRequest addGroupTaskRequest = new AddGroupTaskRequest();
+        if (groupTask != null) {
+            addGroupTaskRequest.setGroupId(groupTask.getGroupId());
+            addGroupTaskRequest.setAssignmentId(groupTask.getAssignmentId());
+            addGroupTaskRequest.setTitle(groupTask.getTitle());
+            addGroupTaskRequest.setPoints(groupTask.getPoints());
+            addGroupTaskRequest.setAssignedTo(groupTask.getAssignedToId());
+
+
+            Disposable disposable = retrofitAPI.addNewGroupTask(addGroupTaskRequest)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            () -> {
+                                fetchGroupTasks(groupTask.getAssignmentId(), groupTask.getGroupId());
+                                Log.d("addGroupTask", "Group task added successfully");
+                            },
+                            throwable -> {
+                                Log.e("addGroupTask", "Error adding group task", throwable);
+                            }
+                    );
+            mCompositeDisposable.add(disposable);
+        }
+    }
+    private void fetchGroupTasks(int assignmentId, int groupId) {
+        Disposable disposable = retrofitAPI.getGroupTasks(assignmentId,groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -104,13 +122,15 @@ public class AssignmentDetailViewModel extends ViewModel {
     }
 
     public void ChangeTaskStatus(int id){
+        GroupTask groupTask = addingGroupTask.getValue();
         Disposable disposable = retrofitAPI.updateGroupTaskStatus(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         // onComplete
                         () -> {
-                            fetchGroupTasks();
+                            assert groupTask != null;
+                            fetchGroupTasks(groupTask.getAssignmentId(), groupTask.getGroupId());
                             Log.d("ChangeTaskStatus", "Task status updated successfully");
                         },
                         // onError
