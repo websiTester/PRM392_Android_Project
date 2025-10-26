@@ -2,15 +2,15 @@ package com.example.prm392_android_project.models;
 
 public class LoginModel {
     private String username;
-    private String passowrd;
+    private String password;
 
     public LoginModel(){
 
     }
 
-    public LoginModel(String username, String passowrd) {
+    public LoginModel(String username, String password) {
         this.username = username;
-        this.passowrd = passowrd;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -22,10 +22,10 @@ public class LoginModel {
     }
 
     public String getPassowrd() {
-        return passowrd;
+        return password;
     }
 
-    public void setPassowrd(String passowrd) {
-        this.passowrd = passowrd;
+    public void setPassowrd(String password) {
+        this.password = password;
     }
 }

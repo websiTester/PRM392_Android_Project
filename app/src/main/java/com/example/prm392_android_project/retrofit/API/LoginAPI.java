@@ -1,18 +1,15 @@
 package com.example.prm392_android_project.retrofit.API;
 
 import com.example.prm392_android_project.models.LoginModel;
-import com.example.prm392_android_project.models.truong.LoginResponse;
+import com.example.prm392_android_project.models.truong.LoginResult;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface LoginAPI {
-    @POST("login")
-    Call<LoginResponse> login(
+    @POST("/api/Account/login")
+    Call<LoginResult> login(
             @Body LoginModel model
     );
 }
