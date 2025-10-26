@@ -12,6 +12,8 @@
 
     <string name="login">Đăng nhập</string>
     <string name="register">Đăng ký</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
 
     <!-- Hero Section -->
     <string name="welcome_to">Chào mừng đến với</string>
