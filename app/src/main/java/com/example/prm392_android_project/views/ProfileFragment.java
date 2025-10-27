@@ -2,16 +2,20 @@ package com.example.prm392_android_project.views;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,20 +30,35 @@ import android.widget.Toast;
 
 import com.example.prm392_android_project.R;
 import com.example.prm392_android_project.models.DataCallBackFromFragment;
+import com.example.prm392_android_project.models.LoginModel;
+import com.example.prm392_android_project.models.truong.LoginResult;
+import com.example.prm392_android_project.retrofit.API.LoginAPI;
+import com.example.prm392_android_project.retrofit.Client.LoginRetrofitClient;
 import com.example.prm392_android_project.utils.Validatior;
+import com.example.prm392_android_project.viewmodels.LoginViewModel;
 
 import java.io.ByteArrayOutputStream;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class ProfileFragment extends Fragment implements View.OnClickListener{
 
 
+    private Retrofit retrofit;
+    private LoginAPI retrofitAPI;
+    private Call<LoginResult> call;
     private Button btnCancel, btnDone;
     private ImageView imgEditAvarta;
-    private EditText edtName, edtEmail, edtDob;
+    private EditText edtFirstName, edtLastName, edtEmail, edtUsername;
     private RadioGroup radioGroupGender;
     private RadioButton rbGender;
     private String imgBase64String = "";
+    private LoginViewModel loginViewModel;
+
 
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -62,6 +81,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
+        Log.d("ProfileFragment", loginViewModel.getLoginResult().getUsername());
         declareVariables(view);
         getDataFromSharedPrefrence();
 
@@ -75,29 +96,33 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         imgEditAvarta = view.findViewById(R.id.imgEditAvarta);
         btnCancel = view.findViewById(R.id.btnCancel);
         btnDone = view.findViewById(R.id.btnDone);
-        edtName = view.findViewById(R.id.edtName);
+        edtFirstName = view.findViewById(R.id.edtFirstName);
+        edtLastName = view.findViewById(R.id.edtLastName);
+        edtUsername = view.findViewById(R.id.edtUsername);
         edtEmail = view.findViewById(R.id.edtEmail);
-        edtDob = view.findViewById(R.id.edtDob);
-        radioGroupGender = view.findViewById(R.id.radioGroupGender);
+
+
     }
 
     public void getDataFromSharedPrefrence(){
-        String name = sharedPreferences.getString("name", "");
-        String email = sharedPreferences.getString("email", "");
-        String dob = sharedPreferences.getString("dob", "");
-        String gender = sharedPreferences.getString("gender", "");
-        imgBase64String = sharedPreferences.getString("avarta", "");
-        edtName.setText(name);
+//        String name = sharedPreferences.getString("name", "");
+//        String email = sharedPreferences.getString("email", "");
+//        String dob = sharedPreferences.getString("dob", "");
+//        String gender = sharedPreferences.getString("gender", "");
+//        imgBase64String = sharedPreferences.getString("avarta", "");
+
+        String firstName = loginViewModel.getLoginResult().getFirstname();
+        String lastName = loginViewModel.getLoginResult().getLastname();
+        String username = loginViewModel.getLoginResult().getUsername();
+        String email = loginViewModel.getLoginResult().getEmail();
+        imgBase64String = loginViewModel.getLoginResult().getAvarta();
+        edtFirstName.setText(firstName);
+        edtLastName.setText(lastName);
+        edtFirstName.setText(firstName);
+        edtUsername.setText(username);
         edtEmail.setText(email);
-        edtDob.setText(dob);
 
-        if(gender.equals("female")){
-            radioGroupGender.check(R.id.rbFemale);
-        } else {
-            radioGroupGender.check(R.id.rbMale);
-        }
-
-        if (imgBase64String.equals("")){
+        if ("".equals(imgBase64String) || imgBase64String==null){
             imgEditAvarta.setImageResource(R.mipmap.ic_launcher);
         } else {
             Bitmap bitmap = decodeBase64String(imgBase64String);
@@ -144,33 +169,49 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
     public boolean validateInput(View view){
 
-        Validatior validatior = new Validatior();
-        String name = edtName.getText().toString();
-        String email = edtEmail.getText().toString();
-        String dob = edtDob.getText().toString();
-        String gender = "";
-        if (radioGroupGender.getCheckedRadioButtonId() == R.id.rbMale){
-            gender = "male";
-        } else  gender = "female";
 
-        if(name.equals("") ||  email.equals("")
-                || dob.equals("")){
+        String firstName = edtFirstName.getText().toString();
+        String lastName = edtLastName.getText().toString();
+        String username = edtUsername.getText().toString();
+        String email = edtEmail.getText().toString();
+
+
+        if(firstName.equals("") ||  email.equals("")
+                || lastName.equals("") || username.equals("") ){
             Toast.makeText(view.getContext(), "Please fill all the field", Toast.LENGTH_SHORT).show();
             return false;
         } else {
-            if(validatior.validateDob(dob)==false){
-                Toast.makeText(view.getContext(), "Date of birth format yyyy/MM/dd", Toast.LENGTH_SHORT).show();
-                return false;
-            } else {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("name", name);
-                editor.putString("email", email);
-                editor.putString("dob", dob);
-                editor.putString("gender", gender);
-                editor.putString("avarta", imgBase64String);
-                editor.apply();
-                Toast.makeText(view.getContext(), "Update successful", Toast.LENGTH_SHORT).show();
-            }
+
+            retrofit = LoginRetrofitClient.getInstance();
+            retrofitAPI = retrofit.create(LoginAPI.class);
+            LoginResult loginResult = new LoginResult(loginViewModel.getLoginResult().getId(),
+                   username,email,loginViewModel.getLoginResult().getAvarta() ,firstName,lastName);
+            call = retrofitAPI.updateUser(loginResult);
+            call.enqueue(new Callback<LoginResult>() {
+
+                @Override
+                public void onResponse(@NonNull Call<LoginResult> call, @NonNull Response<LoginResult> response) {
+                    Log.d("LOGIN", "Getting User.....");
+                    Log.d("ProfileFragment", response.toString());
+                    if (response.isSuccessful()) {
+                        LoginResult result = response.body();
+                        loginViewModel.setLoginResult(result);
+
+                        Log.d("ProfileFragment", result.getUsername());
+                    } else {
+                        Toast.makeText(getActivity(), "Can not update profile", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d("LOGIN", "Get User Successful");
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<LoginResult> call, @NonNull Throwable throwable) {
+                    Log.d("LOGIN", "onFailure: " + throwable.getMessage());
+                }
+            });
+
+            Toast.makeText(view.getContext(), "Update successful", Toast.LENGTH_SHORT).show();
+
         }
 
         return true;
@@ -219,5 +260,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     public void setImageAvarta(Bitmap bitmap){
         imgEditAvarta.setImageBitmap(bitmap);
         imgBase64String = converImageToBase64(bitmap);
+        loginViewModel.getLoginResult().setAvarta(imgBase64String);
     }
 }

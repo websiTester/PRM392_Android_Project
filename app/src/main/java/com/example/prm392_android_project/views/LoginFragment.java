@@ -1,5 +1,6 @@
 package com.example.prm392_android_project.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -76,6 +77,11 @@ public class LoginFragment extends Fragment {
                         loginViewModel.setLoginResult(result);
                         HomeFragment homeFragment = new HomeFragment();
                         getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+                        LoginSuccessActivity activity = new LoginSuccessActivity();
+                        Intent intent = new Intent(getActivity(), LoginSuccessActivity.class);
+                        intent.putExtra("user", result);
+                        startActivity(intent);
+
                         Log.d("LOGIN", result.getUsername());
                     } else {
                         Toast.makeText(getContext(), "Invalid Username or Password", Toast.LENGTH_SHORT).show();

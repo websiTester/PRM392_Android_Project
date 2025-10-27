@@ -33,9 +33,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.prm392_android_project.R;
 import com.example.prm392_android_project.models.DataCallBackFromFragment;
+import com.example.prm392_android_project.models.truong.LoginResult;
+import com.example.prm392_android_project.viewmodels.LoginViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
@@ -49,6 +52,8 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private View navHeader;
     private ProfileFragment profileFragment;
+    private LoginResult user;
+    private LoginViewModel loginViewModel;
 
     private ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -83,7 +88,13 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_success);
-
+        user = (LoginResult) getIntent().getSerializableExtra("user");
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        loginViewModel.setLoginResult(user);
+        Log.d("LoginSuccessActivity", user.getUsername()+"");
+        Log.d("LoginSuccessActivity", user.getFirstname()+"");
+        Log.d("LoginSuccessActivity", user.getLastname()+"");
+        Log.d("LoginSuccessActivity", user.getAvarta()+"");
         profileFragment = new ProfileFragment(this, this);
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
@@ -93,6 +104,7 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Home");
 
         navHeader = navigationView.getHeaderView(0);
         setNavHeader();
@@ -117,22 +129,16 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
     @Override
     public void setNavHeader(){
         TextView txtName = navHeader.findViewById(R.id.txtName);
+        TextView txtUsername = navHeader.findViewById(R.id.txtUsername);
         TextView txtEmail = navHeader.findViewById(R.id.txtEmail);
-        TextView txtDob = navHeader.findViewById(R.id.txtDob);
-        TextView txtGender = navHeader.findViewById(R.id.txtGender);
         ImageView imgAvarta = navHeader.findViewById(R.id.imgAvarta);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("profile_pref", MODE_PRIVATE);
-        String name = sharedPreferences.getString("name", "");
-        String email = sharedPreferences.getString("email", "");
-        String dob = sharedPreferences.getString("dob", "");
-        String gender = sharedPreferences.getString("gender", "");
-        String imgBase64 = sharedPreferences.getString("avarta", "");
-        txtName.setText(name);
-        txtEmail.setText(email);
-        txtDob.setText(dob);
-        txtGender.setText(gender);
-        if(imgBase64.equals("")){
+        txtName.setText(user.getLastname());
+        txtEmail.setText(user.getEmail());
+        txtUsername.setText(user.getUsername());
+        String imgBase64 = user.getAvarta();
+
+        if("".equals(imgBase64) || imgBase64 == null){
             imgAvarta.setImageResource(R.mipmap.ic_launcher);
         } else {
             Bitmap bitmap = decodeBase64String(imgBase64);

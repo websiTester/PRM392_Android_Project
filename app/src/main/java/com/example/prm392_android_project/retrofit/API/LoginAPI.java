@@ -6,10 +6,16 @@ import com.example.prm392_android_project.models.truong.LoginResult;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface LoginAPI {
     @POST("/api/Account/login")
     Call<LoginResult> login(
             @Body LoginModel model
+    );
+
+    @PUT("/api/Account/Update")
+    Call<LoginResult> updateUser(
+            @Body LoginResult model
     );
 }
