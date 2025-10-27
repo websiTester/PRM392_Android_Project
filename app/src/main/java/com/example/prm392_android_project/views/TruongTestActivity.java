@@ -17,7 +17,9 @@ public class TruongTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_truong_test);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         LoginFragment loginFragment = new LoginFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, loginFragment).commit();
     }

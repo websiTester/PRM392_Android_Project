@@ -1,12 +1,26 @@
 package com.example.prm392_android_project.models.truong;
 
-public class LoginResult {
+import java.io.Serializable;
+
+public class LoginResult implements Serializable {
     private int id;
     private String username;
     private String email;
-    private String avarta;
-    private String firstname;
-    private String lastname;
+    private String avatar;
+    private String firstName;
+    private String lastName;
+
+    public LoginResult() {
+    }
+
+    public LoginResult(int id, String username, String email, String avarta, String firstname, String lastname) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.avatar = avarta;
+        this.firstName = firstname;
+        this.lastName = lastname;
+    }
 
     public int getId() {
         return id;
@@ -33,26 +47,26 @@ public class LoginResult {
     }
 
     public String getAvarta() {
-        return avarta;
+        return avatar;
     }
 
     public void setAvarta(String avarta) {
-        this.avarta = avarta;
+        this.avatar = avarta;
     }
 
     public String getFirstname() {
-        return firstname;
+        return firstName;
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        this.firstName = firstname;
     }
 
     public String getLastname() {
-        return lastname;
+        return lastName;
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
+        this.lastName = lastname;
     }
 }
