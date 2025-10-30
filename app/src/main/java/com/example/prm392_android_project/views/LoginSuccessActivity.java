@@ -107,10 +107,18 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
         getSupportActionBar().setTitle("Home");
 
         navHeader = navigationView.getHeaderView(0);
+
         setNavHeader();
         Button editButton = navHeader.findViewById(R.id.btnEdit);
         editButton.setOnClickListener(view -> {
             replaceProfileFragment();
+        });
+
+        Button logoutBtn = navHeader.findViewById(R.id.btnLogout);
+        logoutBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(this, TruongTestActivity.class);
+            startActivity(intent);
+
         });
 
     }
@@ -133,10 +141,10 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
         TextView txtEmail = navHeader.findViewById(R.id.txtEmail);
         ImageView imgAvarta = navHeader.findViewById(R.id.imgAvarta);
 
-        txtName.setText(user.getLastname());
-        txtEmail.setText(user.getEmail());
-        txtUsername.setText(user.getUsername());
-        String imgBase64 = user.getAvarta();
+        txtName.setText(loginViewModel.getLoginResult().getLastname());
+        txtEmail.setText(loginViewModel.getLoginResult().getEmail());
+        txtUsername.setText(loginViewModel.getLoginResult().getUsername());
+        String imgBase64 = loginViewModel.getLoginResult().getAvarta();
 
         if("".equals(imgBase64) || imgBase64 == null){
             imgAvarta.setImageResource(R.mipmap.ic_launcher);
