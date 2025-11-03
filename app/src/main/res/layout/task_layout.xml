@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="handleEvent"
             type="com.example.prm392_android_project.actionbindings.ChangeTaskColumnEvent" />
@@ -43,22 +44,33 @@
         android:paddingTop="3dp"/>
 
     <ImageView
-        android:id="@+id/move_to_doing_btn"
+        android:id="@+id/move_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_move_to_right_column"
+        android:src="@drawable/outline_arrow_upward_24"
         app:layout_constraintTop_toTopOf="@id/task_point"
-        android:onClick="@{() -> handleEvent.OnChangeTaskStatus(task.taskId)}"
+        android:visibility="@{task.status.equals(@string/status_todo) ? View.GONE : View.VISIBLE}"
+        android:onClick="@{() -> handleEvent.OnChangeTaskStatus(task.taskId, true)}"
         app:layout_constraintStart_toEndOf="@id/task_point"
-        android:layout_marginStart="10dp"/>
+        />
+    <ImageView
+        android:id="@+id/move_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/outline_arrow_downward_24"
+        app:layout_constraintTop_toTopOf="@id/task_point"
+        android:visibility="@{task.status.equals(@string/status_done) ? View.GONE : View.VISIBLE}"
+        android:onClick="@{() -> handleEvent.OnChangeTaskStatus(task.taskId, false)}"
+        app:layout_constraintStart_toEndOf="@id/task_point"
+        android:layout_marginStart="24dp"/>
     <ImageView
         android:id="@+id/remove_task_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_trash_bin"
         app:layout_constraintTop_toTopOf="@id/task_point"
-        app:layout_constraintStart_toEndOf="@id/move_to_doing_btn"
-        android:layout_marginStart="10dp"/>
+        app:layout_constraintStart_toEndOf="@id/task_point"
+        android:layout_marginStart="48dp"/>
     <TextView
         android:id="@+id/task_assigned_to"
         android:layout_width="320dp"
