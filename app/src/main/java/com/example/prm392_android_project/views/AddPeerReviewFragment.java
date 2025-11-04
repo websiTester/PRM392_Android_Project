@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -101,8 +102,13 @@ public class AddPeerReviewFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (getDialog() != null && getDialog().getWindow() != null) {
-            getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Dialog dialog = getDialog();
+        if (dialog != null && dialog.getWindow() != null) {
+            Window window = dialog.getWindow();
+            int width = (int) (requireContext().getResources().getDisplayMetrics().widthPixels * 0.9);
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            window.setLayout(width, height);
+            window.setBackgroundDrawableResource(android.R.color.transparent);
         }
     }
     @Override

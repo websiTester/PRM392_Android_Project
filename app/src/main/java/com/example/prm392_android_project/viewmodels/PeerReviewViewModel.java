@@ -27,6 +27,7 @@ public class PeerReviewViewModel extends AndroidViewModel {
     private final Retrofit retrofit = RetrofitClient.getInstance();
     private final PeerReviewAPI retrofitAPI = retrofit.create(PeerReviewAPI.class);
     private final CompositeDisposable mCompositeDisposable;
+    private boolean isReviewExisted;
     private MutableLiveData<PeerReview> mPeerReview = new MutableLiveData<>();
     public LiveData<PeerReview> getPeerReview() {
         return mPeerReview;
@@ -42,6 +43,7 @@ public class PeerReviewViewModel extends AndroidViewModel {
                 .subscribe(
                         pr -> {
                             mPeerReview.setValue(pr);
+                            isReviewExisted = true;
                             Log.d(TAG, "Fetched review successfully.");
                         },
                         throwable -> {
@@ -49,6 +51,7 @@ public class PeerReviewViewModel extends AndroidViewModel {
                                 HttpException httpEx = (HttpException) throwable;
                                 if (httpEx.code() == 404) {
                                     PeerReview peerReview = new PeerReview();
+                                    isReviewExisted = false;
                                     mPeerReview.setValue(peerReview);
                                     Log.w(TAG, "Submission not found (404). Created empty submission.");
                                 } else {
@@ -73,20 +76,37 @@ public class PeerReviewViewModel extends AndroidViewModel {
             modifyPeerReview.setComment(peerReview.getComment());
         }
 
-        Disposable disposable = retrofitAPI.addPeerReview(modifyPeerReview)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        () -> {
-                            Log.d(TAG, "Review added successfully");
-                            Toast.makeText(getApplication(), "Review added successfully", Toast.LENGTH_SHORT).show();
-                        },
-                        throwable -> {
-                            Log.e(TAG, "Error Adding Review", throwable);
-                            Toast.makeText(getApplication(), "Error Adding Review", Toast.LENGTH_SHORT).show();
-                        }
-                );
-        mCompositeDisposable.add(disposable);
+        if(!isReviewExisted){
+            Disposable disposable = retrofitAPI.addPeerReview(modifyPeerReview)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            () -> {
+                                Log.d(TAG, "Review added successfully");
+                                Toast.makeText(getApplication(), "Review added successfully", Toast.LENGTH_SHORT).show();
+                            },
+                            throwable -> {
+                                Log.e(TAG, "Error Adding Review", throwable);
+                                Toast.makeText(getApplication(), "Error Adding Review", Toast.LENGTH_SHORT).show();
+                            }
+                    );
+            mCompositeDisposable.add(disposable);
+        }else{
+            Disposable disposable = retrofitAPI.updatePeerReview(modifyPeerReview)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            () -> {
+                                Log.d(TAG, "Review updated successfully");
+                                Toast.makeText(getApplication(), "Review updated successfully", Toast.LENGTH_SHORT).show();
+                            },
+                            throwable -> {
+                                Log.e(TAG, "Error Updating Review", throwable);
+                                Toast.makeText(getApplication(), "Error Updating Review", Toast.LENGTH_SHORT).show();
+                            }
+                    );
+            mCompositeDisposable.add(disposable);
+        }
     }
     @Override
     protected void onCleared() {
