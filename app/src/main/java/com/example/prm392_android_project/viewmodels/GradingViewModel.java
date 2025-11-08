@@ -1,11 +1,18 @@
 package com.example.prm392_android_project.viewmodels;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.prm392_android_project.models.GradingModel;
+import com.example.prm392_android_project.models.MemberGradingModel;
 import com.example.prm392_android_project.retrofit.API.GradingAPI;
-import com.example.prm392_android_project.retrofit.Client.RetrofitClient2;
+import com.example.prm392_android_project.retrofit.Client.RetrofitClient;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -19,13 +26,13 @@ public class GradingViewModel extends ViewModel {
     public MutableLiveData<String> message = new MutableLiveData<>();
 
     public GradingViewModel() {
-        gradingAPI = RetrofitClient2.getClient().create(GradingAPI.class);
+        gradingAPI = RetrofitClient.getInstance().create(GradingAPI.class);
     }
 
     // 🔹 Lấy thông tin chấm điểm nhóm
     public void fetchGrading(int groupId, int assignmentId) {
         disposables.add(
-                gradingAPI.getGradingDetails(assignmentId, groupId)
+                gradingAPI.getGradingDetails(groupId, assignmentId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
@@ -49,14 +56,20 @@ public class GradingViewModel extends ViewModel {
     }
 
     // 🔹 Lưu đánh giá thành viên
-    public void saveMemberGrades(GradingModel model) {
+    public void saveMemberGrades(GradingModel gradingModel, int teacherId) {
+        // Log body gửi lên cho chắc
+        Log.d("API_REQUEST", "save-member-grades body = " + new Gson().toJson(gradingModel));
+
         disposables.add(
-                gradingAPI.saveMemberGrades(model)
+                gradingAPI.saveMemberGrades(gradingModel, teacherId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                () -> message.setValue("Lưu đánh giá thành viên thành công!"),
-                                error -> message.setValue("Lỗi khi lưu thành viên: " + error.getMessage())
+                                () -> message.setValue("✅ Lưu đánh giá thành viên thành công!"),
+                                error -> {
+                                    Log.e("API_ERROR", "❌ Lỗi khi lưu đánh giá thành viên: " + error.getMessage(), error);
+                                    message.setValue("❌ Lỗi khi lưu đánh giá thành viên: " + error.getMessage());
+                                }
                         )
         );
     }

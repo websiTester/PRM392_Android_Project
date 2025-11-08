@@ -25,7 +25,8 @@ public interface GradingAPI {
     // 🔹 Lưu đánh giá từng thành viên
     @POST("api/Grading/save-member-grades")
     Completable saveMemberGrades(
-            @Body GradingModel gradingModel
+            @Body GradingModel gradingModel,
+            @Query("teacherId") int teacherId
     );
 
 }
