@@ -12,9 +12,8 @@ private final AssignmentDetailViewModel assignmentDetailViewModel;
         this.assignmentDetailViewModel = assignmentDetailViewModel;
     }
 
-    public void OnChangeTaskStatus(int id){
-        Log.d("ChangeTaskColumnEvent", "OnChangeTaskStatus: "+id);
-        assignmentDetailViewModel.ChangeTaskStatus(id);
+    public void OnChangeTaskStatus(int id, boolean isUp){
+        assignmentDetailViewModel.ChangeTaskStatus(id, isUp);
     }
 
 }

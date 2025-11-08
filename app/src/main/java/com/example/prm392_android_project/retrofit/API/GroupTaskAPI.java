@@ -18,7 +18,7 @@ public interface GroupTaskAPI {
     Flowable<List<GroupTask>> getGroupTasks(@Query("assignmentId") int assignmentId, @Query("groupId") int groupId);
     @PUT("/api/GroupTask/UpdateGroupTaskStatus")
     Completable updateGroupTaskStatus(
-            @Query("id") int id
+            @Query("id") int id, @Query("isUp") boolean isUp
     );
     @POST("/api/GroupTask")
     Completable addNewGroupTask(

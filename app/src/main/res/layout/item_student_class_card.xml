@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@android:color/white">
+
+        <!-- Class Info Row -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="8dp"
+                android:layout_toStartOf="@id/iconClass">
+
+                <TextView
+                    android:id="@+id/tvClassName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lớp FE01"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#1F2937"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tvCourseName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Khóa học: Phát triển Web"
+                    android:textSize="14sp"
+                    android:textColor="#6B7280"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
+
+            <!-- Icon -->
+            <ImageView
+                android:id="@+id/iconClass"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_class_icon"
+                android:contentDescription="Class Icon"
+                android:layout_alignParentEnd="true"
+                app:tint="#4F46E5" />
+        </RelativeLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E5E7EB"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Teacher Info and Details Link -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvTeacherName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:ellipsize="end"
+                android:maxWidth="200dp"
+                android:maxLines="1"
+                android:text="Giáo viên: ThS. Trần Văn C"
+                android:textColor="#4B5563"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvDetailLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chi tiết →"
+                android:textSize="14sp"
+                android:textColor="#4F46E5"
+                android:textStyle="bold"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
