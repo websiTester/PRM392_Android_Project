@@ -27,16 +27,13 @@ import com.example.prm392_android_project.models.TaskModel;
 import com.example.prm392_android_project.viewmodels.GradingViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GradingActivity extends AppCompatActivity {
 
     private GradingViewModel viewModel;
 
     // View trong layout
+    private TextView tvAssignmentName, tvGroupName;
     private TextInputEditText etDocumentLink;
     private EditText etOverallGrade, etOverallComment;
     private MaterialButton btnSaveGroupGrade, btnOpenLink;
@@ -48,6 +45,8 @@ public class GradingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_grading);
 
         // Ánh xạ view
+        tvAssignmentName = findViewById(R.id.tv_assignment_name);
+        tvGroupName = findViewById(R.id.tv_group_name);
         etDocumentLink = findViewById(R.id.et_document_link);
         etOverallGrade = findViewById(R.id.et_overall_grade);
         etOverallComment = findViewById(R.id.et_overall_comment);
@@ -62,11 +61,23 @@ public class GradingActivity extends AppCompatActivity {
         viewModel.gradingData.observe(this, grading -> {
             if (grading != null) {
                 Log.d("UI_UPDATE", "Dữ liệu nhận được: " + grading);
+                // ===== TÊN BÀI TẬP & TÊN NHÓM =====
+                tvAssignmentName.setText("Bài tập: " +
+                        (grading.getAssignmentName() != null ? grading.getAssignmentName() : "Không rõ"));
 
-                // Gán dữ liệu nhóm
-                etDocumentLink.setText(grading.getSubmissionLink() != null ? grading.getSubmissionLink() : "");
+                tvGroupName.setText("Nhóm: " +
+                        (grading.getGroupName() != null ? grading.getGroupName() : "Không rõ"));
+                // ===== GÁN DỮ LIỆU NHÓM =====
+                String link = grading.getSubmissionLink();
+                etDocumentLink.setText(link != null ? link : "");
                 etOverallGrade.setText(grading.getGroupGrade() != null ? grading.getGroupGrade().toString() : "");
                 etOverallComment.setText(grading.getGroupComment() != null ? grading.getGroupComment() : "");
+
+                // 👉 NẾU KHÔNG CÓ LINK THÌ KHÔNG CHO NHẬP / LƯU
+                boolean canEdit = link != null && !link.trim().isEmpty();
+                etOverallGrade.setEnabled(canEdit);
+                etOverallComment.setEnabled(canEdit);
+                btnSaveGroupGrade.setEnabled(canEdit);
 
                 // Hiển thị danh sách thành viên
                 layoutMembers.removeAllViews();
@@ -77,7 +88,7 @@ public class GradingActivity extends AppCompatActivity {
                         memberLayout.setOrientation(LinearLayout.VERTICAL);
                         memberLayout.setPadding(0, 24, 0, 24);
 
-                        // Tên
+                        // ===== TÊN THÀNH VIÊN =====
                         TextView tvName = new TextView(this);
                         tvName.setText(member.getFullName());
                         tvName.setTextSize(18);
@@ -87,17 +98,21 @@ public class GradingActivity extends AppCompatActivity {
                         // ===== Ô ĐIỂM TV =====
                         EditText etScore = new EditText(this);
                         etScore.setHint("Điểm TV");
-                        etScore.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                        etScore.setInputType(
+                                InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL
+                        );
                         etScore.setBackgroundResource(android.R.drawable.edit_text);
                         etScore.setLayoutParams(new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT
                         ));
 
-                        // 👉 GÁN GIÁ TRỊ ĐÃ LƯU (NẾU CÓ)
+                        // 👉 GÁN ĐIỂM ĐÃ LƯU (NẾU CÓ)
                         if (member.getGrade() != null) {
                             etScore.setText(String.valueOf(member.getGrade()));
                         }
+                        // 🔒 KHÓA NẾU KHÔNG CÓ LINK
+                        etScore.setEnabled(canEdit);
 
                         memberLayout.addView(etScore);
 
@@ -116,23 +131,132 @@ public class GradingActivity extends AppCompatActivity {
                         if (member.getComment() != null) {
                             etComment.setText(member.getComment());
                         }
+                        // 🔒 KHÓA NẾU KHÔNG CÓ LINK
+                        etComment.setEnabled(canEdit);
 
                         memberLayout.addView(etComment);
 
-                        // ... phần Tiến độ công việc + divider
+                        // ===== TIẾN ĐỘ CÔNG VIỆC (TÍNH TỪ TASK) =====
+                        TextView tvProgressTitle = new TextView(this);
+                        tvProgressTitle.setText("Tiến độ công việc");
+                        tvProgressTitle.setTextSize(14);
+                        tvProgressTitle.setPadding(0, 12, 0, 4);
+                        memberLayout.addView(tvProgressTitle);
+
+                        int todo = 0;
+                        int doing = 0;
+                        int done = 0;
+
+                        if (member.getTasks() != null) {
+                            for (TaskModel task : member.getTasks()) {
+                                String status = task.getStatus();
+                                if (status == null) continue;
+
+                                if (status.equalsIgnoreCase("Pending")
+                                        || status.equalsIgnoreCase("To Do")
+                                        || status.equalsIgnoreCase("Todo")) {
+                                    todo++;
+                                } else if (status.equalsIgnoreCase("In Progress")
+                                        || status.equalsIgnoreCase("Doing")) {
+                                    doing++;
+                                } else if (status.equalsIgnoreCase("Completed")
+                                        || status.equalsIgnoreCase("Done")
+                                        || status.equalsIgnoreCase("Finished")) {
+                                    done++;
+                                }
+                            }
+                        }
+
+                        String base = "Cần làm: " + todo +
+                                "   Đang làm: " + doing +
+                                "   Hoàn thành: " + done;
+
+                        SpannableString progressText = new SpannableString(base);
+
+                        int idxTodo = base.indexOf("Cần làm:");
+                        int idxDoing = base.indexOf("Đang làm:");
+                        int idxDone = base.indexOf("Hoàn thành:");
+
+                        if (idxTodo >= 0) {
+                            progressText.setSpan(
+                                    new ForegroundColorSpan(Color.RED),
+                                    idxTodo,
+                                    idxTodo + "Cần làm:".length(),
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                            );
+                        }
+                        if (idxDoing >= 0) {
+                            progressText.setSpan(
+                                    new ForegroundColorSpan(Color.BLUE),
+                                    idxDoing,
+                                    idxDoing + "Đang làm:".length(),
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                            );
+                        }
+                        if (idxDone >= 0) {
+                            progressText.setSpan(
+                                    new ForegroundColorSpan(Color.parseColor("#008000")),
+                                    idxDone,
+                                    base.length(),
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                            );
+                        }
+
+                        TextView tvProgress = new TextView(this);
+                        tvProgress.setText(progressText);
+                        tvProgress.setTextSize(14);
+                        tvProgress.setPadding(0, 0, 0, 8);
+                        memberLayout.addView(tvProgress);
+                        // ===== NÚT XEM THÊM TASK =====
+                        MaterialButton btnViewTasks = new MaterialButton(this);
+                        btnViewTasks.setText("Xem thêm");
+                        btnViewTasks.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        btnViewTasks.setPadding(0, 8, 0, 8);
+
+// Cần biến final để dùng trong lambda
+                        final MemberGradingModel currentMember = member;
+                        btnViewTasks.setOnClickListener(v -> showTasksDialog(currentMember));
+
+                        memberLayout.addView(btnViewTasks);
+                        // ===== DÒNG KẺ NGĂN CÁCH =====
+                        View divider = new View(this);
+                        divider.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                2
+                        ));
+                        divider.setBackgroundColor(Color.parseColor("#DDDDDD"));
+                        memberLayout.addView(divider);
+
+                        // Thêm block thành viên vào layout cha
                         layoutMembers.addView(memberLayout);
                     }
-
 
                     // 🔹 Nút lưu đánh giá thành viên
                     MaterialButton btnSaveMemberGrades = new MaterialButton(this);
                     btnSaveMemberGrades.setText("Lưu đánh giá thành viên");
-                    btnSaveMemberGrades.setBackgroundColor(getResources().getColor( R.color.colorAccent));
+                    btnSaveMemberGrades.setBackgroundColor(
+                            getResources().getColor(R.color.colorAccent)
+                    );
                     btnSaveMemberGrades.setTextColor(Color.WHITE);
                     btnSaveMemberGrades.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    ));
+
+                    // 🔒 KHÓA NẾU KHÔNG CÓ LINK
+                    btnSaveMemberGrades.setEnabled(canEdit);
+
                     btnSaveMemberGrades.setOnClickListener(v -> {
+                        if (!canEdit) {
+                            Toast.makeText(this,
+                                    "Chưa có đường dẫn tài liệu, không thể chấm điểm.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         GradingModel grading1 = viewModel.gradingData.getValue();
                         if (grading1 == null || grading1.getMembers() == null) {
                             Toast.makeText(this, "Không có dữ liệu thành viên để lưu", Toast.LENGTH_SHORT).show();
@@ -179,9 +303,6 @@ public class GradingActivity extends AppCompatActivity {
                         int teacherId = 1; // hoặc lấy từ Intent
                         viewModel.saveMemberGrades(grading1, teacherId);
                     });
-
-
-
 
                     layoutMembers.addView(btnSaveMemberGrades);
                 } else {
@@ -234,4 +355,65 @@ public class GradingActivity extends AppCompatActivity {
             }
         });
     }
+    private void showTasksDialog(MemberGradingModel member) {
+        androidx.appcompat.app.AlertDialog.Builder builder =
+                new androidx.appcompat.app.AlertDialog.Builder(this);
+
+        String title = member.getFullName() != null
+                ? member.getFullName()
+                : "Thành viên";
+
+        builder.setTitle("Công việc của " + title);
+
+        // Root layout cho dialog (có scroll)
+        android.widget.ScrollView scrollView = new android.widget.ScrollView(this);
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        container.setPadding(padding, padding, padding, padding);
+
+        if (member.getTasks() == null || member.getTasks().isEmpty()) {
+            TextView tvEmpty = new TextView(this);
+            tvEmpty.setText("Không có task nào.");
+            tvEmpty.setTextSize(14);
+            tvEmpty.setTextColor(Color.DKGRAY);
+            container.addView(tvEmpty);
+        } else {
+            int index = 1;
+            for (TaskModel task : member.getTasks()) {
+                // Tên task
+                TextView tvTaskTitle = new TextView(this);
+                tvTaskTitle.setText(index + ". " +
+                        (task.getTitle() != null ? task.getTitle() : "Không có tiêu đề"));
+                tvTaskTitle.setTextSize(15);
+                tvTaskTitle.setTypeface(null, Typeface.BOLD);
+                tvTaskTitle.setTextColor(Color.BLACK);
+                tvTaskTitle.setPadding(0, (index == 1 ? 0 : 16), 0, 4);
+                container.addView(tvTaskTitle);
+
+                // Trạng thái + điểm
+                String status = task.getStatus() != null ? task.getStatus() : "Không rõ";
+                String detail = "Trạng thái: " + status + "\n" +
+                        "Điểm: " + task.getPoints();
+
+                TextView tvTaskDetail = new TextView(this);
+                tvTaskDetail.setText(detail);
+                tvTaskDetail.setTextSize(14);
+                tvTaskDetail.setTextColor(Color.DKGRAY);
+                container.addView(tvTaskDetail);
+
+                index++;
+            }
+        }
+
+        scrollView.addView(container);
+        builder.setView(scrollView);
+
+        builder.setPositiveButton("Đóng", null);
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
 }
