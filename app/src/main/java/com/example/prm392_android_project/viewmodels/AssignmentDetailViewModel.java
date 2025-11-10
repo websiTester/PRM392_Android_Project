@@ -1,20 +1,20 @@
 package com.example.prm392_android_project.viewmodels;
 
-import android.app.Application;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.example.prm392_android_project.dtos.AddGroupTaskRequest;
+import com.example.prm392_android_project.dtos.SubmitAssignmentRequest;
+import com.example.prm392_android_project.models.AssignmentSubmission;
 import com.example.prm392_android_project.models.GroupTask;
 import com.example.prm392_android_project.retrofit.API.GroupTaskAPI;
 import com.example.prm392_android_project.retrofit.Client.RetrofitClient;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +34,7 @@ public class AssignmentDetailViewModel extends ViewModel {
     public MutableLiveData<GroupTask> getAddingGroupTask() {
         return addingGroupTask;
     }
-    public void initialSetGroupIdAndAssignmentIdToaddingGroupTask(int groupId, int assignmentId) {
+    public void initialSetGroupIdAndAssignmentId(int groupId, int assignmentId) {
         GroupTask groupTask = new GroupTask();
         groupTask.setGroupId(groupId);
         groupTask.setAssignmentId(assignmentId);
@@ -43,7 +43,6 @@ public class AssignmentDetailViewModel extends ViewModel {
         addingGroupTask.setValue(groupTask);
         fetchGroupTasks(assignmentId,groupId);
     }
-
     public AssignmentDetailViewModel() {
         mCompositeDisposable = new CompositeDisposable();
 
@@ -72,8 +71,6 @@ public class AssignmentDetailViewModel extends ViewModel {
             return input.stream().filter(g -> g.getStatus().equals("done")).collect(Collectors.toList());
         });
     }
-
-
     public void addGroupTask() {
         GroupTask groupTask = addingGroupTask.getValue();
         AddGroupTaskRequest addGroupTaskRequest = new AddGroupTaskRequest();
@@ -120,10 +117,9 @@ public class AssignmentDetailViewModel extends ViewModel {
                 );
         mCompositeDisposable.add(disposable);
     }
-
-    public void ChangeTaskStatus(int id){
+    public void ChangeTaskStatus(int id, boolean isUp){
         GroupTask groupTask = addingGroupTask.getValue();
-        Disposable disposable = retrofitAPI.updateGroupTaskStatus(id)
+        Disposable disposable = retrofitAPI.updateGroupTaskStatus(id,isUp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -141,6 +137,10 @@ public class AssignmentDetailViewModel extends ViewModel {
         mCompositeDisposable.add(disposable);
 
     }
-
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        mCompositeDisposable.clear();
+    }
 }
 

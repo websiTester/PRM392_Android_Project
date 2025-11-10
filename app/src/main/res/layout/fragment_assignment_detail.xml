@@ -19,13 +19,49 @@
             android:textSize="20sp"
             android:textColor="@android:color/black"
             android:paddingVertical="8dp" />
-        <Button
-            android:id="@+id/add_task_btn"
-            android:layout_width="wrap_content"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:backgroundTint="@null"
-            android:text="Add Task"
-            android:background="@drawable/task_column_background"/>
+            >
+
+            <Button
+                android:id="@+id/add_task_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@null"
+                android:text="Add Task"
+                android:background="@drawable/task_column_background"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/submit_btn"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread" />
+
+            <Button
+                android:id="@+id/submit_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@null"
+                android:text="Submit"
+                android:background="@drawable/task_column_background"
+                app:layout_constraintStart_toEndOf="@+id/add_task_btn"
+                app:layout_constraintEnd_toStartOf="@+id/feedback_btn"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread" />
+
+            <Button
+                android:id="@+id/feedback_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@null"
+                android:text="Feedback"
+                android:background="@drawable/task_column_background"
+                app:layout_constraintStart_toEndOf="@+id/submit_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- To do -->
         <TextView

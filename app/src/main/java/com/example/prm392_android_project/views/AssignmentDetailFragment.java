@@ -1,18 +1,11 @@
 package com.example.prm392_android_project.views;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,22 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_android_project.R;
 import com.example.prm392_android_project.actionbindings.ChangeTaskColumnEvent;
+import com.example.prm392_android_project.dtos.SubmitAssignmentRequest;
 import com.example.prm392_android_project.models.GroupTask;
 import com.example.prm392_android_project.recyclerviewadapter.TaskRecyclerViewAdapter;
 import com.example.prm392_android_project.viewmodels.AssignmentDetailViewModel;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.IMarker;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.MPPointF;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +41,10 @@ public class AssignmentDetailFragment extends Fragment {
     private PieChart chart;
     private static int groupId;
     private static int assignmentId;
+    private int todoValue;
+    private int doingValue;
+    private int doneValue;
+
 
 
 
@@ -73,7 +63,7 @@ public class AssignmentDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(requireActivity()).get(AssignmentDetailViewModel.class);
-        viewModel.initialSetGroupIdAndAssignmentIdToaddingGroupTask(groupId,assignmentId);
+        viewModel.initialSetGroupIdAndAssignmentId(groupId,assignmentId);
         super.onCreate(savedInstanceState);
     }
 
@@ -106,20 +96,23 @@ public class AssignmentDetailFragment extends Fragment {
         doneRecyclerView.setAdapter(doneAdapter);
 
         viewModel.getTodoGroupTaskLiveData().observe(getViewLifecycleOwner(), groupTasks -> {
-            Log.d("AssignmentDetailFragment", "Todo group tasks change");
+            todoValue = groupTasks.size();
+            setData();
             List<GroupTask> todoGroupTasks = new ArrayList<>(groupTasks);
             todoAdapter.submitList(todoGroupTasks);
 
         });
 
         viewModel.getInProgressGroupTaskLiveData().observe(getViewLifecycleOwner(), groupTasks -> {
-            Log.d("AssignmentDetailFragment", "Doing group tasks change");
+            doingValue = groupTasks.size();
+            setData();
             List<GroupTask> inProgressGroupTasks = new ArrayList<>(groupTasks);
             doingAdapter.submitList(inProgressGroupTasks);
         });
 
         viewModel.getDoneGroupTaskLiveData().observe(getViewLifecycleOwner(), groupTasks -> {
-            Log.d("AssignmentDetailFragment", "Done group tasks change");
+            doneValue = groupTasks.size();
+            setData();
             List<GroupTask> doneGroupTasks = new ArrayList<>(groupTasks);
             doneAdapter.submitList(doneGroupTasks);
         });
@@ -133,29 +126,42 @@ public class AssignmentDetailFragment extends Fragment {
             CreateTaskDialogFragment dialog = CreateTaskDialogFragment.newInstance(groupId);
             dialog.show(getParentFragmentManager(), CreateTaskDialogFragment.TAG);
         });
-        setData();
+        view.findViewById(R.id.submit_btn).setOnClickListener(view2 -> {
+            SubmitAssignmentFragment dialog = SubmitAssignmentFragment.newInstance(assignmentId);
+            dialog.show(getParentFragmentManager(), SubmitAssignmentFragment.TAG);
+        });
+
+        view.findViewById(R.id.feedback_btn).setOnClickListener(view3 -> {
+            AddPeerReviewFragment dialog = AddPeerReviewFragment.newInstance(assignmentId, groupId);
+            dialog.show(getParentFragmentManager(), AddPeerReviewFragment.TAG);
+        });
+
+
     }
 
     private void setData() {
+
         IMarker marker = new CustomPieChartMarker(getContext(), R.layout.custom_marker_view);
         chart.setMarker(marker);
 
         chart.setHighlightPerTapEnabled(true);
         ArrayList<PieEntry> entries = new ArrayList<>();
 
-        float toDoValue = 5f;
-        float doingValue = 4f;
-        float doneValue = 2f;
-
-        entries.add(new PieEntry(toDoValue, "Todo"));
-        entries.add(new PieEntry(doneValue, "Doing"));
-        entries.add(new PieEntry(doingValue, "Done"));
+        if (todoValue != 0) {
+            entries.add(new PieEntry(todoValue, "Todo"));
+        }
+        if (doingValue != 0) {
+            entries.add(new PieEntry(doingValue, "Doing"));
+        }
+        if (doneValue != 0) {
+            entries.add(new PieEntry(doneValue, "Done"));
+        }
 
         PieDataSet dataSet = new PieDataSet(entries, "");
 
         dataSet.setDrawIcons(false);
         dataSet.setSliceSpace(0f);
-        dataSet.setSelectionShift(0f); // Tắt hiệu ứng nhấn vào
+        dataSet.setSelectionShift(0f);
         dataSet.setDrawValues(false);
         ArrayList<Integer> colors = new ArrayList<>();
 

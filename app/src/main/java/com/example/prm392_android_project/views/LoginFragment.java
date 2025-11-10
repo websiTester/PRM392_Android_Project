@@ -61,7 +61,7 @@ public class LoginFragment extends Fragment {
                 Toast.makeText(getContext(), "Please enter username and password", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            binding.btnLogin.setEnabled(false);
             retrofit = LoginRetrofitClient.getInstance();
             retrofitAPI = retrofit.create(LoginAPI.class);
 
@@ -94,7 +94,7 @@ public class LoginFragment extends Fragment {
                     Log.d("LOGIN", "onFailure: " + throwable.getMessage());
                 }
             });
-
+            binding.btnLogin.setEnabled(true);
 
         });
 

@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 
 import androidx.databinding.BindingAdapter;
@@ -73,5 +74,4 @@ public class BindingAdapters {
             return 0;
         }
     }
-
 }
