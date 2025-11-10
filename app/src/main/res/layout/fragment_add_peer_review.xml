@@ -86,7 +86,7 @@
             android:numStars="5"
             android:progressBackgroundTint="@color/black"
             android:progressTint="@color/yellow"
-            android:customrating="@={peerReview.score}"
+            android:rating="@={peerReview.score}"
             android:scaleX="0.4"
             android:scaleY="0.4"
             android:secondaryProgressTint="@color/black"

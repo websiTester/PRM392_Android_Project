@@ -74,27 +74,4 @@ public class BindingAdapters {
             return 0;
         }
     }
-
-    @BindingAdapter("android:customrating")
-    public static void setRating(RatingBar view, float value) {
-        if (view.getRating() != value) {
-            view.setRating(value);
-        }
-    }
-
-    @InverseBindingAdapter(attribute = "android:customrating", event = "android:ratingAttrChanged")
-    public static int getRating(RatingBar view) {
-        return Math.round(view.getRating());
-    }
-
-//    @BindingAdapter(value = {"android:ratingAttrChanged"})
-//    public static void setRatingListener(RatingBar view, final InverseBindingListener listener) {
-//        if (listener != null) {
-//            view.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
-//                if (fromUser) listener.onChange();
-//            });
-//        }
-//    }
-
-
 }

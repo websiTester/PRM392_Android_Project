@@ -85,6 +85,7 @@ public class AddPeerReviewFragment extends DialogFragment {
         Spinner spinner = binding.spinnerMember;
         getUserForDropdown(spinner);
         binding.btnAddReview.setOnClickListener(v -> {
+            float score = binding.starRating.getRating();
             viewModel.addPeerReview(currentReviewerId,2,assignmentId,groupId);
             dismiss();
         });
