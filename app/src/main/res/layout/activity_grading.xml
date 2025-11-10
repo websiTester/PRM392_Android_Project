@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5"
-    tools:context=".GradingActivity">
+    tools:context=".views.GradingActivity">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -31,14 +31,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Nội dung có thể cuộn -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="12dp">
 
-            <!-- Card 1: Tài liệu đã nộp -->
+                <TextView
+                    android:id="@+id/tv_assignment_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bài tập: ..."
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/tv_group_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Nhóm: ..."
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray" />
+
+            </LinearLayout>
+
+            <!-- Card 1: Thông tin tài liệu -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,8 +96,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textUri"
-                            android:text="https://docs.google.com/docu..."
-                            android:textColor="#333333" />
+                            android:focusableInTouchMode="true"
+                            android:textColor="#333333"
+                        android:focusable="false"
+                        android:cursorVisible="false"
+                        android:longClickable="true"
+                        android:clickable="true" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.button.MaterialButton
@@ -83,6 +111,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Mở liên kết" />
+
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -123,7 +153,8 @@
                         android:padding="12dp"
                         android:hint="VD: 8.5"
                         android:inputType="numberDecimal"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:focusableInTouchMode="true" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -132,17 +163,16 @@
                         android:text="Nhận xét chung"
                         android:textColor="#555555"
                         android:textSize="14sp" />
-
                     <EditText
                         android:id="@+id/et_overall_comment"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
+                        android:focusableInTouchMode="true"
                         android:gravity="top|start"
                         android:hint="Nhận xét về bài làm, sự phối hợp của nhóm..."
                         android:inputType="textMultiLine"
                         android:padding="8dp"
                         android:textSize="14sp" />
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_save_group_grade"
                         style="@style/Widget.MaterialComponents.Button"
@@ -153,7 +183,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Card 3: Đánh giá thành viên -->
+            <!-- Card 3: Danh sách thành viên -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -161,6 +191,7 @@
                 app:cardElevation="4dp">
 
                 <LinearLayout
+                    android:id="@+id/layout_members"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -171,53 +202,10 @@
                         android:layout_height="wrap_content"
                         android:text="Đánh giá thành viên"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Học sinh 1"
-                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/design_default_color_primary" />
+                        android:layout_marginBottom="12dp" />
 
-                    <EditText
-                        android:id="@+id/member_score"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:hint="Điểm"
-                        android:inputType="numberDecimal"
-                        android:padding="12dp"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Nhận xét cá nhân"
-                        android:textColor="#555555"
-                        android:textSize="14sp" />
-
-                    <EditText
-                        android:id="@+id/member_comment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minLines="3"
-                        android:gravity="top|start"
-                        android:hint="Nhận xét về sự đóng góp của thành viên này..."
-                        android:inputType="textMultiLine"
-                        android:padding="8dp"
-                        android:textSize="14sp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_save_member_grade"
-                        style="@style/Widget.MaterialComponents.Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Lưu đánh giá thành viên" />
+                    <!-- Các khối thành viên sẽ được thêm bằng code -->
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
