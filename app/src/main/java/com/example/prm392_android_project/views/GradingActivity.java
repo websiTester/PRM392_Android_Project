@@ -1,6 +1,8 @@
 package com.example.prm392_android_project.views;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -299,8 +301,8 @@ public class GradingActivity extends AppCompatActivity {
                         grading1.setSubmissionLink(etDocumentLink.getText().toString());
                         grading1.setGroupComment(etOverallComment.getText().toString());
                         // assignmentName, groupName, fullName đã có sẵn từ GET lần đầu
-
-                        int teacherId = 1; // hoặc lấy từ Intent
+                        SharedPreferences sharedPreferences = this.getSharedPreferences("pref", Context.MODE_PRIVATE);
+                        int teacherId = sharedPreferences.getInt("userId",3); // hoặc lấy từ Intent
                         viewModel.saveMemberGrades(grading1, teacherId);
                     });
 

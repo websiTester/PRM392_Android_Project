@@ -13,7 +13,7 @@ import retrofit2.http.Query;
 
 public interface TeacherClassApi {
     @GET("/api/TeacherClass/TeacherHome")
-    Call<TeacherHomeResponse> getTeacherHome();
+    Call<TeacherHomeResponse> getTeacherHome(@Query("teacherId")int teacherId);
 
 
     @POST("/Class/Create")

@@ -3,31 +3,51 @@ package com.example.prm392_android_project.models.truong;
 import java.io.Serializable;
 
 public class LoginResult implements Serializable {
-    private int id;
+    private int userId;
     private String username;
     private String email;
     private String avatar;
     private String firstName;
     private String lastName;
 
+    private  int roleId;
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
+
     public LoginResult() {
     }
 
-    public LoginResult(int id, String username, String email, String avarta, String firstname, String lastname) {
-        this.id = id;
+    public LoginResult(int userId, String username, String email, String avatar, String firstName, String lastName) {
+        this.userId = userId;
         this.username = username;
         this.email = email;
-        this.avatar = avarta;
-        this.firstName = firstname;
-        this.lastName = lastname;
+        this.avatar = avatar;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public LoginResult(int userId, String username, String email, String avatar, String firstName, String lastName, int roleId) {
+        this.userId = userId;
+        this.username = username;
+        this.email = email;
+        this.avatar = avatar;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.roleId = roleId;
     }
 
     public int getId() {
-        return id;
+        return userId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.userId = id;
     }
 
     public String getUsername() {

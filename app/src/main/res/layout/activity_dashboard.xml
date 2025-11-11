@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F4FB">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- ====== 4 CARD THỐNG KÊ (2x2) ====== -->
+        <GridLayout
+            android:id="@+id/gridStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:alignmentMode="alignMargins"
+            android:useDefaultMargins="true">
+
+            <!-- Tổng Người Dùng -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_columnWeight="1"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tổng số giáo viên"
+                            android:textStyle="bold"
+                            android:textSize="13sp"
+                            android:textColor="#555555" />
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvTotalTeacher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="257"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#000000" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Lượt Truy Cập -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_columnWeight="1"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tổng số học sinh"
+                            android:textStyle="bold"
+                            android:textSize="13sp"
+                            android:textColor="#555555" />
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvTotalStudent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1357"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#000000" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Tổng Lớp Học -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_columnWeight="1"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tổng Lớp Học"
+                            android:textStyle="bold"
+                            android:textSize="13sp"
+                            android:textColor="#555555" />
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvTotalClasses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="45"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#000000" />
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Tổng Khóa Học -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_columnWeight="1"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tổng Khóa Học"
+                            android:textStyle="bold"
+                            android:textSize="13sp"
+                            android:textColor="#555555" />
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvTotalCourses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="26"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#000000" />
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </GridLayout>
+
+        <!-- ====== DANH SÁCH NGƯỜI DÙNG (CÓ VIỀN) ====== -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardUserList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Tiêu đề -->
+                <TextView
+                    android:id="@+id/tvUserTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Danh Sách Người Dùng"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#000000" />
+
+                <!-- RecyclerView danh sách -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvUsers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+    </LinearLayout>
+
+</ScrollView>
