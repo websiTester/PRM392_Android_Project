@@ -1,6 +1,8 @@
 package com.example.prm392_android_project.views;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,7 +61,11 @@ public class TeacherClassActivity extends AppCompatActivity {
     private void loadTeacherClasses() {
         TeacherClassApi api = RetrofitClient2.getClient().create(TeacherClassApi.class);
 
-        api.getTeacherHome(101).enqueue(new Callback<TeacherHomeResponse>() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("pref", Context.MODE_PRIVATE);
+        int teacherId = sharedPreferences.getInt("userId",101); // hoặc lấy từ Intent
+
+
+        api.getTeacherHome(teacherId).enqueue(new Callback<TeacherHomeResponse>() {
             @Override
             public void onResponse(Call<TeacherHomeResponse> call, Response<TeacherHomeResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
