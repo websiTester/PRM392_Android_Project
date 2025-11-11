@@ -53,7 +53,7 @@ public class TeacherClassAdapter extends RecyclerView.Adapter<TeacherClassAdapte
                 // 2. Lấy dịch vụ Clipboard
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
 
-                // 3. Tạo ClipData (dữ liệu để sao chép)
+                // Tạo ClipData (dữ liệu để sao chép)
                 // "ClassCode" là nhãn, classCode là nội dung
                 ClipData clip = ClipData.newPlainText("ClassCode", classCode);
 
