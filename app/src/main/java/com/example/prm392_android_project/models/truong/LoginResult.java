@@ -3,7 +3,7 @@ package com.example.prm392_android_project.models.truong;
 import java.io.Serializable;
 
 public class LoginResult implements Serializable {
-    private int id;
+    private int userId;
     private String username;
     private String email;
     private String avatar;
@@ -14,7 +14,7 @@ public class LoginResult implements Serializable {
     }
 
     public LoginResult(int id, String username, String email, String avarta, String firstname, String lastname) {
-        this.id = id;
+        this.userId = id;
         this.username = username;
         this.email = email;
         this.avatar = avarta;
@@ -23,11 +23,11 @@ public class LoginResult implements Serializable {
     }
 
     public int getId() {
-        return id;
+        return userId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.userId = id;
     }
 
     public String getUsername() {

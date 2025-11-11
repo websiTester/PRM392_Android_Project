@@ -82,6 +82,7 @@ public class LoginFragment extends Fragment {
                         intent.putExtra("user", result);
                         startActivity(intent);
 
+                        Log.d("LOGIN", result.getId()+"");
                         Log.d("LOGIN", result.getUsername());
                     } else {
                         Toast.makeText(getContext(), "Invalid Username or Password", Toast.LENGTH_SHORT).show();
