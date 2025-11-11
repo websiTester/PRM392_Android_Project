@@ -2,6 +2,8 @@ package com.example.prm392_android_project.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class AssignmentModel {
     @SerializedName("id")
     private int id;
@@ -13,6 +15,27 @@ public class AssignmentModel {
     private String deadline;
     @SerializedName("isGroupAssignment")
     private boolean isGroupAssignment;
+    @SerializedName("studentGradeDisplay")
+    private String studentGradeDisplay;
+
+    public List<GroupGradeModel> getGroupGrades() {
+        return groupGrades;
+    }
+
+    public void setGroupGrades(List<GroupGradeModel> groupGrades) {
+        this.groupGrades = groupGrades;
+    }
+
+    public String getStudentGradeDisplay() {
+        return studentGradeDisplay;
+    }
+
+    public void setStudentGradeDisplay(String studentGradeDisplay) {
+        this.studentGradeDisplay = studentGradeDisplay;
+    }
+
+    @SerializedName("groupGrades")
+    private List<GroupGradeModel> groupGrades;
 
     public int getId() {
         return id;

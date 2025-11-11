@@ -1,116 +1,194 @@
 package com.example.prm392_android_project.views;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_android_project.R;
+import com.example.prm392_android_project.models.AssignmentModel;
+import com.example.prm392_android_project.models.ClassDetailStudentViewModel;
 import com.example.prm392_android_project.models.GroupModel;
 import com.example.prm392_android_project.recyclerviewadapter.AssignmentAdapter;
 import com.example.prm392_android_project.recyclerviewadapter.GroupAdapter;
-import com.example.prm392_android_project.viewmodels.StudentClassDetailViewModel;
+import com.example.prm392_android_project.retrofit.API.StudentClassDetailApi;
+import com.example.prm392_android_project.retrofit.Client.RetrofitClient;
+import com.example.prm392_android_project.retrofit.Client.RetrofitClient2;
 
-public class StudentClassDetailActivity extends AppCompatActivity implements GroupAdapter.OnGroupButtonClickListener{
-    private StudentClassDetailViewModel viewModel;
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class StudentClassDetailActivity extends AppCompatActivity
+        implements GroupAdapter.OnGroupButtonClickListener,
+        AssignmentAdapter.OnAssignmentClickListener {
 
     private ProgressBar progressBar;
-    private TextView tvClassName;
-    private TextView tvTeacherName;
-    private RecyclerView rvAssignments;
-    private RecyclerView rvGroups;
+    private TextView tvClassName, tvTeacherName;
+    private RecyclerView rvAssignments, rvGroups;
+    private Toolbar toolbar;
 
     private AssignmentAdapter assignmentAdapter;
     private GroupAdapter groupAdapter;
+
+    private StudentClassDetailApi studentApi;
+    private int currentClassId = -1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_class_detail);
 
-        viewModel = new ViewModelProvider(this).get(StudentClassDetailViewModel.class);
+        studentApi = RetrofitClient2.getClient().create(StudentClassDetailApi.class);
 
         progressBar = findViewById(R.id.progress_bar);
         tvClassName = findViewById(R.id.tv_class_name);
         tvTeacherName = findViewById(R.id.tv_teacher_name);
         rvAssignments = findViewById(R.id.recycler_view_assignments);
         rvGroups = findViewById(R.id.recycler_view_groups);
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("Chi tiết Lớp học");
+        }
 
         setupRecyclerViews();
 
-        setupObservers();
-
-        int classIdToLoad = this.getSharedPreferences("CLASS_ID", MODE_PRIVATE).getInt("classId", -1);
-        if (classIdToLoad != -1) {
-            viewModel.fetchClassDetail(classIdToLoad);
+        currentClassId = getSharedPreferences("CLASS_ID", Context.MODE_PRIVATE).getInt("classId", -1);
+        Log.d("StudentClassDetail", "Received Class ID: " + currentClassId);
+        if (currentClassId != -1) {
+            loadClassDetails(currentClassId);
         } else {
-            Toast.makeText(this, "Không có Class ID", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không tìm thấy Class ID", Toast.LENGTH_SHORT).show();
+            finish();
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void setupRecyclerViews() {
         rvAssignments.setLayoutManager(new LinearLayoutManager(this));
-        assignmentAdapter = new AssignmentAdapter();
+        assignmentAdapter = new AssignmentAdapter(new ArrayList<>(), this);
         rvAssignments.setAdapter(assignmentAdapter);
 
         rvGroups.setLayoutManager(new LinearLayoutManager(this));
-        groupAdapter = new GroupAdapter(this);
+        groupAdapter = new GroupAdapter(new ArrayList<>(), this);
         rvGroups.setAdapter(groupAdapter);
     }
 
-    private void setupObservers() {
-        viewModel.isLoading.observe(this, isLoading -> {
-            progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        });
+    private void loadClassDetails(int classId) {
+        progressBar.setVisibility(View.VISIBLE);
+        studentApi.getClassDetail(classId).enqueue(new Callback<ClassDetailStudentViewModel>() {
+            @Override
+            public void onResponse(Call<ClassDetailStudentViewModel> call, Response<ClassDetailStudentViewModel> response) {
+                progressBar.setVisibility(View.GONE);
+                if (response.isSuccessful() && response.body() != null) {
+                    ClassDetailStudentViewModel classDetail = response.body();
 
-        viewModel.error.observe(this, errorMessage -> {
-            if (errorMessage != null && !errorMessage.isEmpty()) {
-                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
-            }
-        });
+                    tvClassName.setText(classDetail.getClassName());
+                    if (classDetail.getTeacher() != null) {
+                        tvTeacherName.setText(classDetail.getTeacher().getFirstName() + " " + classDetail.getTeacher().getLastName());
+                    }
 
-        viewModel.classDetail.observe(this, classDetail -> {
-            if (classDetail != null) {
-                tvClassName.setText(classDetail.getClassName());
+                    assignmentAdapter = new AssignmentAdapter(classDetail.getAssignments(), StudentClassDetailActivity.this);
+                    rvAssignments.setAdapter(assignmentAdapter);
 
-                if (classDetail.getTeacher() != null) {
-                    String teacherName = classDetail.getTeacher().getFirstName() + " " + classDetail.getTeacher().getLastName();
-                    tvTeacherName.setText(teacherName);
+                    groupAdapter = new GroupAdapter(classDetail.getGroups(), StudentClassDetailActivity.this);
+                    groupAdapter.setCurrentUserGroupId(classDetail.getCurrentUserGroupId());
+                    rvGroups.setAdapter(groupAdapter);
+
+                } else {
+                    Toast.makeText(StudentClassDetailActivity.this, "Lỗi tải dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
+            }
 
-                groupAdapter.setCurrentUserGroupId(classDetail.getCurrentUserGroupId());
-
-                assignmentAdapter.submitList(classDetail.getAssignments());
-                groupAdapter.submitList(classDetail.getGroups());
+            @Override
+            public void onFailure(Call<ClassDetailStudentViewModel> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(StudentClassDetailActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API_GetClassDetail", "onFailure", t);
             }
         });
+    }
 
-        viewModel.actionSuccess.observe(this, isSuccess -> {
-            if (Boolean.TRUE.equals(isSuccess)) {
-                Toast.makeText(this, "Hành động thành công!", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onAssignmentClick(AssignmentModel assignment) {
+        int assignmentId = assignment.getId();
 
-                int classIdToLoad = this.getSharedPreferences("CLASS_ID", MODE_PRIVATE).getInt("classId", -1);
-                if(classIdToLoad != -1) viewModel.fetchClassDetail(classIdToLoad);
+        SharedPreferences pref = this.getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("assignmentId", assignmentId);
+        editor.apply();
 
-                viewModel.resetActionSuccess();
-            }
-        });
+        Log.d("onAssignmentClick", "Đã lưu Assignment ID: " + assignmentId + " vào file 'pref'");
+
+        Intent intent = new Intent(this, GradingActivity.class);
+        startActivity(intent);
+
+        Toast.makeText(this, "Mở bài tập (ID: " + assignmentId + ")", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onJoinClick(GroupModel group) {
-        viewModel.joinGroup(group.getGroupId());
+        progressBar.setVisibility(View.VISIBLE);
+        studentApi.joinGroup(group.getGroupId()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                progressBar.setVisibility(View.GONE);
+                if (response.isSuccessful()) {
+                    Toast.makeText(StudentClassDetailActivity.this, "Tham gia nhóm thành công!", Toast.LENGTH_SHORT).show();
+                    loadClassDetails(currentClassId); // Tải lại dữ liệu
+                } else {
+                    Toast.makeText(StudentClassDetailActivity.this, "Lỗi: Bạn có thể đã ở nhóm khác", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(StudentClassDetailActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public void onLeaveClick(GroupModel group) {
-        viewModel.leaveGroup(group.getGroupId());
+        progressBar.setVisibility(View.VISIBLE);
+        studentApi.leaveGroup(group.getGroupId()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                progressBar.setVisibility(View.GONE);
+                if (response.isSuccessful()) {
+                    Toast.makeText(StudentClassDetailActivity.this, "Rời nhóm thành công!", Toast.LENGTH_SHORT).show();
+                    loadClassDetails(currentClassId); // Tải lại dữ liệu
+                } else {
+                    Toast.makeText(StudentClassDetailActivity.this, "Lỗi khi rời nhóm", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(StudentClassDetailActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
