@@ -32,6 +32,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     private final FCMTokenAPI retrofitAPI = retrofit.create(FCMTokenAPI.class);
     private final CompositeDisposable mCompositeDisposable;
     private final SharedPreferences sharedPref ;
+    private final  SharedPreferences studentSharedPref;
     private int groupId;
 
     public int getGroupId() {
@@ -47,13 +48,13 @@ public class MainActivityViewModel extends AndroidViewModel {
         mFirebaseDatabase =  FirebaseDatabase.getInstance("https://prm392finalproject-5c391-default-rtdb.asia-southeast1.firebasedatabase.app/");
         mCompositeDisposable = new CompositeDisposable();
         sharedPref = context.getSharedPreferences("fcmToken", Context.MODE_PRIVATE);
+        studentSharedPref = context.getSharedPreferences("pref", Context.MODE_PRIVATE);
         getClassesId();
 
     }
     private void addFCMToken(int classId){
         String key = "token" + classId;
         String spToken = sharedPref.getString(key, null);
-        Log.d(TAG, "Token: " + spToken);
         if(spToken != null) {
             return;
         }
@@ -96,14 +97,15 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
     private void getGroupIdByClassId(int classId){
-        Disposable disposable = retrofitAPI.getGroupId(classId, 2)
+        int studentId =studentSharedPref.getInt("userId",-1);
+        Disposable disposable = retrofitAPI.getGroupId(classId, studentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     Log.d(TAG, "Group Id: " + response);
                     groupId = response;
                 }, throwable -> {
-                    Log.e(TAG, "Error: " + throwable.getMessage());
+                    Log.e(TAG, "Errorsss: " + throwable.getMessage());
                 });
 
         mCompositeDisposable.add(disposable);
