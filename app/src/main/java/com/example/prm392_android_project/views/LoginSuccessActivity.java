@@ -126,9 +126,20 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
 
         });
 
-        Intent intent = new Intent(this, TeacherClassActivity.class);
-        startActivity(intent);
-
+        if(user.getRoleId()==2) {
+            Intent intent = new Intent(this, TeacherClassActivity.class);
+            startActivity(intent);
+        }
+        else if(user.getRoleId()==1)
+        {
+            Intent intent=new Intent(this, StudentClassActivity.class);
+            startActivity(intent);
+        }
+        else
+        {
+            Intent intent = new Intent(this, DashboardActivity.class);
+            startActivity(intent);
+        }
 
     }
 

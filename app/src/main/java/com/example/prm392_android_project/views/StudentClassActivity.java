@@ -58,7 +58,10 @@ public class StudentClassActivity extends AppCompatActivity {
     private void loadStudentClasses() {
         StudentClassApi api = RetrofitClient2.getClient().create(StudentClassApi.class);
 
-        api.getStudentClasses().enqueue(new Callback<List<StudentClassItem>>() {
+
+        int studentId =this.getSharedPreferences("pref",MODE_PRIVATE).getInt("userId",-1);
+        Log.d("STUDENTID", "studentID "+studentId);
+        api.getStudentClasses(studentId).enqueue(new Callback<List<StudentClassItem>>() {
             @Override
             public void onResponse(Call<List<StudentClassItem>> call, Response<List<StudentClassItem>> response) {
                 if (response.isSuccessful() && response.body() != null) {

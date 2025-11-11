@@ -47,7 +47,7 @@ public class StudentClassDetailActivity extends AppCompatActivity implements Gro
 
         setupObservers();
 
-        int classIdToLoad = getIntent().getIntExtra("CLASS_ID", -1);
+        int classIdToLoad = this.getSharedPreferences("CLASS_ID", MODE_PRIVATE).getInt("classId", -1);
         if (classIdToLoad != -1) {
             viewModel.fetchClassDetail(classIdToLoad);
         } else {
@@ -95,7 +95,8 @@ public class StudentClassDetailActivity extends AppCompatActivity implements Gro
         viewModel.actionSuccess.observe(this, isSuccess -> {
             if (Boolean.TRUE.equals(isSuccess)) {
                 Toast.makeText(this, "Hành động thành công!", Toast.LENGTH_SHORT).show();
-                int classIdToLoad = getIntent().getIntExtra("CLASS_ID", -1);
+
+                int classIdToLoad = this.getSharedPreferences("CLASS_ID", MODE_PRIVATE).getInt("classId", -1);
                 if(classIdToLoad != -1) viewModel.fetchClassDetail(classIdToLoad);
 
                 viewModel.resetActionSuccess();

@@ -11,11 +11,12 @@
     android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
+        android:id="@+id/student_class_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:background="@android:color/white">
+        android:padding="16dp">
 
         <!-- Class Info Row -->
         <RelativeLayout
@@ -26,31 +27,31 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_alignParentStart="true"
                 android:layout_marginEnd="8dp"
-                android:layout_toStartOf="@id/iconClass">
+                android:layout_toStartOf="@id/iconClass"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvClassName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lớp FE01"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#1F2937"
+                    android:ellipsize="end"
                     android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:text="Lớp FE01"
+                    android:textColor="#1F2937"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvCourseName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Khóa học: Phát triển Web"
-                    android:textSize="14sp"
-                    android:textColor="#6B7280"
+                    android:ellipsize="end"
                     android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:text="Khóa học: Phát triển Web"
+                    android:textColor="#6B7280"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <!-- Icon -->
@@ -58,9 +59,9 @@
                 android:id="@+id/iconClass"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_class_icon"
-                android:contentDescription="Class Icon"
                 android:layout_alignParentEnd="true"
+                android:contentDescription="Class Icon"
+                android:src="@drawable/ic_class_icon"
                 app:tint="#4F46E5" />
         </RelativeLayout>
 
@@ -68,9 +69,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E5E7EB"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:background="#E5E7EB" />
 
         <!-- Teacher Info and Details Link -->
         <RelativeLayout
@@ -94,12 +95,12 @@
                 android:id="@+id/tvDetailLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chi tiết →"
-                android:textSize="14sp"
-                android:textColor="#4F46E5"
-                android:textStyle="bold"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:text="Chi tiết →"
+                android:textColor="#4F46E5"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </RelativeLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

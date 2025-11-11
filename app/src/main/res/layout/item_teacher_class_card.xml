@@ -11,6 +11,7 @@
     android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
+        android:id="@+id/teacher_class_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
@@ -43,10 +44,10 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:text="Tên lớp học rất dài để kiểm tra"
                     android:textColor="#1F2937"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:text="Tên lớp học rất dài để kiểm tra" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvCourseName"
@@ -54,9 +55,9 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:text="Khóa học: Phát triển ứng dụng Web"
                     android:textColor="#6B7280"
-                    android:textSize="14sp"
-                    android:text="Khóa học: Phát triển ứng dụng Web" />
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -78,10 +79,10 @@
                 android:id="@+id/tvClassCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="WE17301_FALL23"
                 android:textColor="#1F2937"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:text="WE17301_FALL23" />
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/ibCopyClassCode"
@@ -115,9 +116,9 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:text="Ngueyn Van A"
                 android:textColor="#4B5563"
-                android:textSize="14sp"
-                   android:text="Ngueyn Van A" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvDetailLink"
