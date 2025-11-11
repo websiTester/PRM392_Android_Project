@@ -1,53 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardUser"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:orientation="horizontal"
-    android:padding="12dp"
-    android:background="#FFDDDD">   <!-- nền hồng để nhìn rõ -->
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="17dp"
+    app:cardUseCompatPadding="true"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="#CC99CC"
+    android:foreground="?attr/selectableItemBackground">
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="horizontal"
+android:gravity="center_vertical"
+android:padding="10dp">
+
+<!-- Avatar tròn -->
+<TextView
+    android:id="@+id/tvAvatar"
+    android:layout_width="44dp"
+    android:layout_height="44dp"
+    android:gravity="center"
+    android:text="AV"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    android:textColor="#4C5BD4"
+    android:background="@drawable/bg_avatar_cirlce" />
+
+<!-- Tên + email -->
+<LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="vertical"
+    android:layout_marginStart="12dp">
 
     <TextView
-        android:id="@+id/tvAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:text="AV"
-        android:textSize="16sp"
-        android:textStyle="bold"
-
-        android:background="@drawable/bg_avatar_cirlce" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginStart="12dp">
-
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tên hiển thị"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#000000" />
-
-        <TextView
-            android:id="@+id/tvEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="email@example.com"
-            android:textSize="12sp"
-            android:textColor="#333333" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvRole"
+        android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Vai trò"
-        android:textColor="#000000"
-        android:textSize="12sp" />
+        android:text="Nguyễn Văn A"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:textColor="#000000" />
 
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hocvien@email.com"
+        android:textSize="12sp"
+        android:textColor="#777777" />
 </LinearLayout>
+
+<!-- Vai trò -->
+<TextView
+    android:id="@+id/tvRole"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Học viên"
+    android:textSize="13sp"
+    android:textStyle="bold"
+    android:textColor="#4C5BD4" />
+</LinearLayout>
+
+    </androidx.cardview.widget.CardView>
