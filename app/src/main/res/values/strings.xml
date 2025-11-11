@@ -34,6 +34,20 @@
     <string name="cta_title">Sẵn sàng bắt đầu hành trình học tập cùng Viroom?</string>
     <string name="register_now">Đăng ký ngay</string>
 
+    <!-- Student & Teacher Section -->
+    <string name="label_assignment_management">Quản lý Bài tập</string>
+    <string name="label_group_management">Quản lý Nhóm</string>
+    <string name="description_fab_add_assignment">Tạo bài tập mới</string>
+    <string name="description_fab_add_group">Tạo nhóm mới</string>
+
+    <string name="action_add_member">Thêm thành viên</string>
+    <string name="label_members">Thành viên:</string>
+    <string name="description_delete_group">Xóa nhóm</string>
+
+    <string name="description_delete_assignment">Xóa bài tập</string>
+
+    <string name="description_remove_member">Xóa thành viên</string>
+
     <!-- Footer -->
     <string name="footer_text">© 2025 Viroom. All rights reserved.</string>
     <string name="large_text">

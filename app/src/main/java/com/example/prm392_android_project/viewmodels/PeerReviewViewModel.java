@@ -74,6 +74,7 @@ public class PeerReviewViewModel extends AndroidViewModel {
             modifyPeerReview.setAssignmentId(assignmentId);
             modifyPeerReview.setGroupId(groupId);
             modifyPeerReview.setComment(peerReview.getComment());
+            modifyPeerReview.setScore(peerReview.getScore());
         }
 
         if(!isReviewExisted){
