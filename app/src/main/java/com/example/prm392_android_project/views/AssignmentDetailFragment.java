@@ -53,10 +53,10 @@ public class AssignmentDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static AssignmentDetailFragment newInstance(String param1, String param2) {
+    public static AssignmentDetailFragment newInstance(int param1, int param2) {
 
-        groupId = Integer.parseInt(param1);
-        assignmentId = Integer.parseInt(param2);
+        groupId = param1;
+        assignmentId = param2;
         return new AssignmentDetailFragment();
     }
 

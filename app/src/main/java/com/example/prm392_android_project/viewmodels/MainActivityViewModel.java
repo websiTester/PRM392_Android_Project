@@ -32,6 +32,14 @@ public class MainActivityViewModel extends AndroidViewModel {
     private final FCMTokenAPI retrofitAPI = retrofit.create(FCMTokenAPI.class);
     private final CompositeDisposable mCompositeDisposable;
     private final SharedPreferences sharedPref ;
+    private int groupId;
+
+    public int getGroupId() {
+        return groupId;
+    }
+    public void setClassId(int classId) {
+        getGroupIdByClassId(classId);
+    }
 
 
     public MainActivityViewModel(Application context) {
@@ -40,10 +48,12 @@ public class MainActivityViewModel extends AndroidViewModel {
         mCompositeDisposable = new CompositeDisposable();
         sharedPref = context.getSharedPreferences("fcmToken", Context.MODE_PRIVATE);
         getClassesId();
+
     }
     private void addFCMToken(int classId){
         String key = "token" + classId;
         String spToken = sharedPref.getString(key, null);
+        Log.d(TAG, "Token: " + spToken);
         if(spToken != null) {
             return;
         }
@@ -83,15 +93,25 @@ public class MainActivityViewModel extends AndroidViewModel {
                 });
 
         mCompositeDisposable.add(disposable);
-
     }
 
+    private void getGroupIdByClassId(int classId){
+        Disposable disposable = retrofitAPI.getGroupId(classId, 2)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    Log.d(TAG, "Group Id: " + response);
+                    groupId = response;
+                }, throwable -> {
+                    Log.e(TAG, "Error: " + throwable.getMessage());
+                });
 
-
-    private void fetchUsersIdByClassId(){
-
+        mCompositeDisposable.add(disposable);
     }
 
-
-
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        mCompositeDisposable.clear();
+    }
 }

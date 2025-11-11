@@ -2,6 +2,7 @@ package com.example.prm392_android_project.views;
 
 import static android.view.View.GONE;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final static String TAG = "MainActivity";
     private CompositeDisposable mCompositeDisposable;
     private MainActivityViewModel viewModel;
+    private int assignmentId;
 
 
 
@@ -50,15 +52,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.test_assignment_detail).setOnClickListener(this);
         mCompositeDisposable = new CompositeDisposable();
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-
+        Intent intent = getIntent();
+        int classId = intent.getIntExtra("classId", 0);
+        assignmentId = intent.getIntExtra("assignmentId", 0);
+        viewModel.setClassId(classId);
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.test_assignment_detail) {
             view.findViewById(R.id.test_assignment_detail).setVisibility(GONE);
-
-            AssignmentDetailFragment fragment = AssignmentDetailFragment.newInstance("2","2");
+            int groupId = viewModel.getGroupId();
+            AssignmentDetailFragment fragment = AssignmentDetailFragment.newInstance(groupId,assignmentId);
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
     }

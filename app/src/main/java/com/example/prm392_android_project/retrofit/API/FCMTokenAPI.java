@@ -20,5 +20,7 @@ public interface FCMTokenAPI {
     );
     @GET("/api/FCM/get-classes")
     Single<List<Integer>> getClassesByUserId(@Query("userId") int userId);
+    @GET("/api/FCM/get-groupId")
+    Single<Integer> getGroupId(@Query("classId") int classId, @Query("userId") int userId);
 
 }
