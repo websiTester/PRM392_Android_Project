@@ -1,8 +1,13 @@
 package com.example.prm392_android_project.recyclerviewadapter;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_android_project.R;
 import com.example.prm392_android_project.models.AssignmentModel;
+import com.example.prm392_android_project.views.AssignmentDetailFragment;
+import com.example.prm392_android_project.views.MainActivity;
+import com.example.prm392_android_project.views.StudentClassDetailActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +50,7 @@ public class AssignmentAdapter extends ListAdapter<AssignmentModel, AssignmentAd
         private TextView tvTitle;
         private TextView tvDescription;
         private TextView tvDeadline;
+        private LinearLayout assignmentCard;
 
         private SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
         private SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
@@ -51,6 +60,7 @@ public class AssignmentAdapter extends ListAdapter<AssignmentModel, AssignmentAd
             tvTitle = itemView.findViewById(R.id.tv_assignment_title);
             tvDescription = itemView.findViewById(R.id.tv_assignment_description);
             tvDeadline = itemView.findViewById(R.id.tv_assignment_deadline);
+            assignmentCard = itemView.findViewById(R.id.assignmentCard);
         }
 
         public void bind(AssignmentModel assignment) {
@@ -68,6 +78,20 @@ public class AssignmentAdapter extends ListAdapter<AssignmentModel, AssignmentAd
             } else {
                 tvDeadline.setText("Không có hạn nộp");
             }
+
+            assignmentCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, MainActivity.class);
+                    int classId = context.getSharedPreferences("CLASS_ID", Context.MODE_PRIVATE).getInt("classId",-1);
+                    int assignmentId = assignment.getId();
+                    Log.d("ASSIGNMENT", "classId: "+classId);
+                    intent.putExtra("classId", classId);
+                    intent.putExtra("assignmentId", assignmentId);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 

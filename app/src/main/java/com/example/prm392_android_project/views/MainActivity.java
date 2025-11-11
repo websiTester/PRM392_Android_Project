@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.test_assignment_detail).setOnClickListener(this);
+
         mCompositeDisposable = new CompositeDisposable();
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         Intent intent = getIntent();
@@ -63,10 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.test_assignment_detail) {
-            view.findViewById(R.id.test_assignment_detail).setVisibility(GONE);
 
-        }
     }
 
     @Override
