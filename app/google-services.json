@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "399694141537",
+    "firebase_url": "https://prm392finalproject-5c391-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "prm392finalproject-5c391",
+    "storage_bucket": "prm392finalproject-5c391.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399694141537:android:9e754592039723ac56b220",
+        "android_client_info": {
+          "package_name": "com.example.prm392_android_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "399694141537-0t854jihnmp6h6qfqnb9hnv66eb4oa53.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAirpRFk5r3dbLTVD2x-HI42LUzhfiVOgk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "399694141537-0t854jihnmp6h6qfqnb9hnv66eb4oa53.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
