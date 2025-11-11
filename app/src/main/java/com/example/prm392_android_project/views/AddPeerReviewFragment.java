@@ -1,6 +1,8 @@
 package com.example.prm392_android_project.views;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -42,7 +44,8 @@ public class AddPeerReviewFragment extends DialogFragment {
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private FragmentAddPeerReviewBinding binding;
     private PeerReviewViewModel viewModel;
-
+    private SharedPreferences studentSharedPref;
+    private int studentId;
 
 
 
@@ -57,6 +60,8 @@ public class AddPeerReviewFragment extends DialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        studentSharedPref = requireContext().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        studentId =studentSharedPref.getInt("userId",-1);
         viewModel = new ViewModelProvider(this).get(PeerReviewViewModel.class);
         super.onCreate(savedInstanceState);
     }
@@ -86,7 +91,7 @@ public class AddPeerReviewFragment extends DialogFragment {
         getUserForDropdown(spinner);
         binding.btnAddReview.setOnClickListener(v -> {
             float score = binding.starRating.getRating();
-            viewModel.addPeerReview(currentReviewerId,2,assignmentId,groupId);
+            viewModel.addPeerReview(currentReviewerId,studentId,assignmentId,groupId);
             dismiss();
         });
 
@@ -141,7 +146,7 @@ public class AddPeerReviewFragment extends DialogFragment {
                                         if (selectedUser != null) {
                                             int reviewerId = selectedUser.getUserId();
                                             currentReviewerId = reviewerId;
-                                            viewModel.fetchPeerReview(reviewerId, 2, assignmentId, groupId);
+                                            viewModel.fetchPeerReview(reviewerId, studentId, assignmentId, groupId);
                                         }
                                     }
                                     @Override

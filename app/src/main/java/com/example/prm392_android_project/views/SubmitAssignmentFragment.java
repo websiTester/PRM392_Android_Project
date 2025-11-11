@@ -1,6 +1,8 @@
 package com.example.prm392_android_project.views;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,8 @@ public class SubmitAssignmentFragment extends DialogFragment {
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private SubmissionViewModel viewModel;
     private FragmentSubmitAssignmentBinding binding;
+    private SharedPreferences studentSharedPref;
+    private int studentId;
 
     public SubmitAssignmentFragment() {
         // Required empty public constructor
@@ -38,6 +42,8 @@ public class SubmitAssignmentFragment extends DialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        studentSharedPref = requireContext().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        studentId =studentSharedPref.getInt("userId",-1);
         viewModel = new ViewModelProvider(requireActivity()).get(SubmissionViewModel.class);
         viewModel.initialSetGroupIdAndAssignmentId(assignmentId);
         super.onCreate(savedInstanceState);
@@ -62,12 +68,12 @@ public class SubmitAssignmentFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         //thay bằng id người dùng
         binding.btnSubmit.setOnClickListener(v -> {
-            viewModel.addAssignmentSubmission(2);
+            viewModel.addAssignmentSubmission(studentId);
             dismiss();
         });
 
         binding.btnCancelSubmit.setOnClickListener(v -> {
-            viewModel.cancelAssignmentSubmission(2);
+            viewModel.cancelAssignmentSubmission(studentId);
             dismiss();
         });
     }
