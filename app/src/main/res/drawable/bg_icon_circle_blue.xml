@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Màu nền -->
+    <solid android:color="#0099FF" />  <!-- xanh nhạt, thay màu tùy ý -->
+
+    <!-- Bo tròn -->
+    <corners android:radius="999dp" />
+
+    <!-- (Tuỳ chọn) padding bên trong -->
+    <padding
+        android:bottom="4dp"
+        android:left="4dp"
+        android:right="4dp"
+        android:top="4dp" />
+</shape>
