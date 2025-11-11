@@ -6,6 +6,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +34,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);   // chính là XML bạn gửi
+        setContentView(R.layout.activity_dashboard);
 
         dashboardAPI = DashboardClient.getDashboardAPI();
 
@@ -54,14 +55,14 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void setupRecycler() {
         userAdapter = new UserAdapter(user -> {
-            Log.d("DBG", "Clicked user id=" + user.getUserId());
-            toggleUserStatus(user);
+            // Khi click 1 user -> mở dialog chi tiết
+            showUserDetailDialog(user);
         });
         rvUsers.setLayoutManager(new LinearLayoutManager(this));
         rvUsers.setAdapter(userAdapter);
     }
 
-    // ================== 1. GỌI GET /api/Dashboard/dashboard ==================
+    // ===== Dashboard =====
     private void loadDashboardFromApi() {
         dashboardAPI.getDashboard().enqueue(new Callback<DashboardModel>() {
             @Override
@@ -69,18 +70,14 @@ public class DashboardActivity extends AppCompatActivity {
                                    Response<DashboardModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     DashboardModel data = response.body();
-
                     tvTotalTeacher.setText(String.valueOf(data.getTotalTeachers()));
                     tvTotalStudent.setText(String.valueOf(data.getTotalStudents()));
                     tvTotalClasses.setText(String.valueOf(data.getTotalClasses()));
                     tvTotalCourses.setText(String.valueOf(data.getTotalCourses()));
-
-                    Log.d("DBG", "Dashboard loaded OK");
                 } else {
                     Toast.makeText(DashboardActivity.this,
-                            "Lỗi tải dashboard: code " + response.code(),
+                            "Lỗi tải dashboard: " + response.code(),
                             Toast.LENGTH_SHORT).show();
-                    Log.e("DBG", "Dashboard error code=" + response.code());
                 }
             }
 
@@ -89,12 +86,11 @@ public class DashboardActivity extends AppCompatActivity {
                 Toast.makeText(DashboardActivity.this,
                         "Lỗi mạng dashboard: " + t.getMessage(),
                         Toast.LENGTH_SHORT).show();
-                Log.e("DBG", "Dashboard onFailure", t);
             }
         });
     }
 
-    // ================== 2. GỌI GET /api/Dashboard/user ==================
+    // ===== Danh sách user =====
     private void loadUsersFromApi() {
         dashboardAPI.getUserList().enqueue(new Callback<List<UserItem>>() {
             @Override
@@ -106,9 +102,8 @@ public class DashboardActivity extends AppCompatActivity {
                     userAdapter.setData(list);
                 } else {
                     Toast.makeText(DashboardActivity.this,
-                            "Lỗi tải danh sách: code " + response.code(),
+                            "Lỗi tải danh sách: " + response.code(),
                             Toast.LENGTH_SHORT).show();
-                    Log.e("DBG", "User list error code=" + response.code());
                 }
             }
 
@@ -117,12 +112,40 @@ public class DashboardActivity extends AppCompatActivity {
                 Toast.makeText(DashboardActivity.this,
                         "Lỗi mạng user list: " + t.getMessage(),
                         Toast.LENGTH_SHORT).show();
-                Log.e("DBG", "User list onFailure", t);
             }
         });
     }
 
-    // ================== 3. GỌI PUT /api/Dashboard/user/{id}/status ==================
+    // ===== Dialog chi tiết user + nút Deactive/Active =====
+    private void showUserDetailDialog(UserItem user) {
+        String statusText = user.isActive() ? "Đang hoạt động" : "Đã khóa";
+        String actionText = user.isActive() ? "Deactive" : "Active";
+
+        String message = "Họ tên: " + safe(user.getFullName()) +
+                "\nEmail: " + safe(user.getEmail()) +
+                "\nVai trò: " + safe(user.getRoleName()) +
+                "\nTrạng thái: " + statusText;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Chi tiết người dùng");
+        builder.setMessage(message);
+
+        // Nút đóng
+        builder.setNegativeButton("Đóng", (dialog, which) -> dialog.dismiss());
+
+        // Nút Deactive/Active
+        builder.setPositiveButton(actionText, (dialog, which) -> {
+            toggleUserStatus(user);
+        });
+
+        builder.show();
+    }
+
+    private String safe(String s) {
+        return s == null ? "" : s;
+    }
+
+    // ===== Gọi API đổi trạng thái, cập nhật lại list =====
     private void toggleUserStatus(UserItem user) {
         final boolean newStatus = !user.isActive();
 
@@ -136,13 +159,12 @@ public class DashboardActivity extends AppCompatActivity {
                             userAdapter.updateItem(user);
 
                             Toast.makeText(DashboardActivity.this,
-                                    newStatus ? "Đã kích hoạt user" : "Đã khóa user",
+                                    newStatus ? "Đã kích hoạt" : "Đã khóa",
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(DashboardActivity.this,
-                                    "Cập nhật trạng thái thất bại: code " + response.code(),
+                                    "Cập nhật trạng thái thất bại: " + response.code(),
                                     Toast.LENGTH_SHORT).show();
-                            Log.e("DBG", "Update status error code=" + response.code());
                         }
                     }
 
@@ -151,7 +173,6 @@ public class DashboardActivity extends AppCompatActivity {
                         Toast.makeText(DashboardActivity.this,
                                 "Lỗi mạng khi cập nhật trạng thái: " + t.getMessage(),
                                 Toast.LENGTH_SHORT).show();
-                        Log.e("DBG", "Update status onFailure", t);
                     }
                 });
     }

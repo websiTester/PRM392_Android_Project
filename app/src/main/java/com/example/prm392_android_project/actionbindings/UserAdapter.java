@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_android_project.R;
@@ -29,16 +30,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         this.listener = listener;
     }
 
-    // Cập nhật toàn bộ danh sách
     public void setData(List<UserItem> newItems) {
         items.clear();
-        if (newItems != null) {
-            items.addAll(newItems);
-        }
+        if (newItems != null) items.addAll(newItems);
         notifyDataSetChanged();
     }
 
-    // Cập nhật 1 user (sau khi toggle active)
     public void updateItem(UserItem updated) {
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).getUserId() == updated.getUserId()) {
@@ -71,27 +68,31 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.tvName.setText(fullName);
         holder.tvEmail.setText(email == null ? "" : email);
         holder.tvRole.setText(role == null ? "" : role);
-
-        // Avatar: 1–2 chữ cái, an toàn
         holder.tvAvatar.setText(getInitials(fullName));
 
         // Màu role
         if (role != null && role.contains("Giảng viên")) {
             holder.tvRole.setTextColor(Color.parseColor("#4CAF50"));
         } else {
-            holder.tvRole.setTextColor(Color.parseColor("#3F51B5"));
+            holder.tvRole.setTextColor(Color.parseColor("#4C5BD4"));
         }
 
-        // Hiệu ứng theo active
-        holder.itemView.setAlpha(user.isActive() ? 1.0f : 0.5f);
+        // ĐỔI MÀU NỀN THẺ THEO STATUS
+        if (user.isActive()) {
+            // active: màu xám nhạt
+            holder.cardUser.setCardBackgroundColor(Color.parseColor("#CC99CC"));
+        } else {
+            // inactive: màu hơi đỏ / hồng nhạt
+            holder.cardUser.setCardBackgroundColor(Color.parseColor("#EEEEEE"));
+        }
 
+        // Click -> báo về Activity
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onUserClick(user);
-            }
+            if (listener != null) listener.onUserClick(user);
         });
 
-        Log.d("DBG", "onBindViewHolder position=" + position + ", name=" + fullName);
+        Log.d("DBG", "onBindViewHolder position=" + position + ", name=" + fullName
+                + ", active=" + user.isActive());
     }
 
     @Override
@@ -99,7 +100,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return items.size();
     }
 
-    // Lấy chữ cái avatar một cách an toàn, không bao giờ substring chuỗi rỗng
     private String getInitials(String name) {
         if (name == null) return "?";
         name = name.trim();
@@ -108,7 +108,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         String[] parts = name.split("\\s+");
         if (parts.length == 0) return "?";
 
-        // Ví dụ: "Nguyễn Văn A" -> "VA"
         if (parts.length == 1) {
             return String.valueOf(Character.toUpperCase(parts[0].charAt(0)));
         } else {
@@ -121,10 +120,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
+        CardView cardUser;
         TextView tvAvatar, tvName, tvEmail, tvRole;
 
         UserViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardUser = itemView.findViewById(R.id.cardUser);
             tvAvatar = itemView.findViewById(R.id.tvAvatar);
             tvName   = itemView.findViewById(R.id.tvName);
             tvEmail  = itemView.findViewById(R.id.tvEmail);
