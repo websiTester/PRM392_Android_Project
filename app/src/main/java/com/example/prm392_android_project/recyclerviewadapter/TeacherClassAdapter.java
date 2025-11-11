@@ -3,10 +3,12 @@ package com.example.prm392_android_project.recyclerviewadapter;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_android_project.R;
 import com.example.prm392_android_project.models.ClassItem;
+import com.example.prm392_android_project.views.TeacherClassDetailActivity;
+import com.example.prm392_android_project.views.TruongTestActivity;
 
 import java.util.List;
 
@@ -41,7 +45,24 @@ public class TeacherClassAdapter extends RecyclerView.Adapter<TeacherClassAdapte
         holder.tvCourseName.setText("Khóa học: " + item.getCourseName());
         holder.tvTeacherName.setText("GV: " + item.getTeacherFullName());
         holder.tvClassCode.setText(""+item.getClassCode());
+       holder.teacherClassCard.setOnClickListener(new View.OnClickListener() {
 
+
+           @Override
+           public void onClick(View v) {
+               Context context = v.getContext();
+               Intent intent = new Intent(context, TeacherClassDetailActivity.class);
+               int classId=item.getClassId();
+               context.getSharedPreferences("CLASS_ID", Context.MODE_PRIVATE)
+                       .edit()
+                       .putInt("classId", classId)
+                       .apply();
+
+               context.startActivity(intent);
+
+           }
+                                                  }
+           );
         String classCode= item.getClassCode();
 
         holder.ibCopyClassCode.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +98,8 @@ public class TeacherClassAdapter extends RecyclerView.Adapter<TeacherClassAdapte
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvClassName, tvCourseName, tvTeacherName, tvDetailLink,tvClassCode;
         ImageButton ibCopyClassCode;
+        LinearLayout teacherClassCard;
+
         ViewHolder(View itemView) {
             super(itemView);
             tvClassName = itemView.findViewById(R.id.tvClassName);
@@ -85,6 +108,7 @@ public class TeacherClassAdapter extends RecyclerView.Adapter<TeacherClassAdapte
             tvDetailLink = itemView.findViewById(R.id.tvDetailLink);
             tvClassCode = itemView.findViewById(R.id.tvClassCode);
             ibCopyClassCode = itemView.findViewById(R.id.ibCopyClassCode);
-        }
+            teacherClassCard = itemView.findViewById(R.id.teacher_class_card);
+                }
     }
 }

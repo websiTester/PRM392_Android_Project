@@ -1,5 +1,7 @@
 package com.example.prm392_android_project.views;
 
+import static com.example.prm392_android_project.views.CreateTaskDialogFragment.TAG;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -39,7 +41,6 @@ public class TeacherClassActivity extends AppCompatActivity {
     private FloatingActionButton fabCreateClass;
 
     private List<CourseItem> allCourses = new ArrayList<>();
-    private final int TEACHER_ID = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class TeacherClassActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = this.getSharedPreferences("pref", Context.MODE_PRIVATE);
         int teacherId = sharedPreferences.getInt("userId",101); // hoặc lấy từ Intent
 
-
+        Log.d(TAG, "loadTeacherClasses: "+teacherId);
         api.getTeacherHome(teacherId).enqueue(new Callback<TeacherHomeResponse>() {
             @Override
             public void onResponse(Call<TeacherHomeResponse> call, Response<TeacherHomeResponse> response) {
@@ -94,7 +95,8 @@ public class TeacherClassActivity extends AppCompatActivity {
 
     private void showCreateClassDialog(TeacherHomeResponse teacherHomeResponse) {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_create_class, null);
-
+        SharedPreferences sharedPreferences = this.getSharedPreferences("pref", Context.MODE_PRIVATE);
+        int teacherId = sharedPreferences.getInt("userId",101); // hoặc lấy từ Intent
         TextInputEditText inputClassName = dialogView.findViewById(R.id.inputClassName);
         RadioGroup radioGroupCourseOption = dialogView.findViewById(R.id.radioGroupCourseOption);
         RadioButton radioExistingCourse = dialogView.findViewById(R.id.radioExistingCourse);
@@ -165,7 +167,7 @@ public class TeacherClassActivity extends AppCompatActivity {
 
             CreateClassRequest request = new CreateClassRequest(
                     className,
-                    TEACHER_ID,
+                    teacherId,
                     isNewCourse,
                     existingCourseId,
                     newCourseName,
