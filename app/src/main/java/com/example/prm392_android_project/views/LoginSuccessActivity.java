@@ -90,6 +90,11 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
         setContentView(R.layout.activity_login_success);
         user = (LoginResult) getIntent().getSerializableExtra("user");
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        SharedPreferences pref = this.getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("userId", user.getId());
+        editor.apply();
+
         loginViewModel.setLoginResult(user);
         Log.d("LoginSuccessActivity", user.getUsername()+"");
         Log.d("LoginSuccessActivity", user.getFirstname()+"");
