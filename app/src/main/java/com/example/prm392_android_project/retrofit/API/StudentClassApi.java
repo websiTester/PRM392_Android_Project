@@ -12,10 +12,11 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface StudentClassApi {
     @GET("api/StudentClass/GetClasses")
-    Call<List<StudentClassItem>> getStudentClasses();
+    Call<List<StudentClassItem>> getStudentClasses(@Query("studentId") int studentId);
 
     @POST("api/StudentClass/Join")
     Call<JsonObject> joinClass(@Body JoinClassRequest request);

@@ -1,6 +1,7 @@
 package com.example.prm392_android_project.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -64,7 +65,7 @@ public class TeacherClassDetailActivity extends AppCompatActivity
         setupClickListeners();
         setupObservers();
 
-        currentClassId = getIntent().getIntExtra("CLASS_ID", -1);
+        currentClassId = this.getSharedPreferences("CLASS_ID",MODE_PRIVATE).getInt("classId", -1);
         if (currentClassId != -1) {
             viewModel.fetchClassDetail(currentClassId);
         } else {

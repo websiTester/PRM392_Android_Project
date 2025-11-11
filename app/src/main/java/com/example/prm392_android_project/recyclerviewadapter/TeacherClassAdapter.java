@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ public class TeacherClassAdapter extends RecyclerView.Adapter<TeacherClassAdapte
                        .edit()
                        .putInt("classId", classId)
                        .apply();
-
+               Log.d("classId", String.valueOf(classId));
                context.startActivity(intent);
 
            }
