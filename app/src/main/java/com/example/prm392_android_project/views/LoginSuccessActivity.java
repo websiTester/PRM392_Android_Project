@@ -126,6 +126,10 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
 
         });
 
+        Intent intent = new Intent(this, TeacherClassActivity.class);
+        startActivity(intent);
+
+
     }
 
 
