@@ -237,8 +237,8 @@ public class TeacherClassDetailActivity extends AppCompatActivity
 
                     Log.d("TeacherClassDetail", "Đã lưu Assignment ID: " + assignmentId + " và Group ID: " + groupId);
 
-                    // Intent intent = new Intent(this, GradingActivity.class);
-                    // startActivity(intent);
+                     Intent intent = new Intent(this, GradingActivity.class);
+                     startActivity(intent);
 
                     Toast.makeText(this, "Mở chấm điểm cho nhóm: " + selectedGroup.getGroupName(), Toast.LENGTH_SHORT).show();
                 })

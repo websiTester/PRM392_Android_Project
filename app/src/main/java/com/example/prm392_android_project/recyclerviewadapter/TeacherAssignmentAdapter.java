@@ -81,7 +81,6 @@ public class TeacherAssignmentAdapter extends RecyclerView.Adapter<TeacherAssign
 
     @Override
     public void onBindViewHolder(@NonNull AssignmentViewHolder holder, int position) {
-        // SỬA LỖI 2: Dùng assignmentList.get(position)
         AssignmentModel currentAssignment = assignmentList.get(position);
         holder.bind(currentAssignment, clickListener);
     }

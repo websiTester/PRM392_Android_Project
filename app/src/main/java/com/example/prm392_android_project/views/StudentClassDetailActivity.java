@@ -142,7 +142,7 @@ public class StudentClassDetailActivity extends AppCompatActivity
 
         Log.d("onAssignmentClick", "Đã lưu Assignment ID: " + assignmentId + " vào file 'pref'");
 
-        Intent intent = new Intent(this, GradingActivity.class);
+        Intent intent = new Intent(this, AssignmentDetailFragment.class);
         startActivity(intent);
 
         Toast.makeText(this, "Mở bài tập (ID: " + assignmentId + ")", Toast.LENGTH_SHORT).show();
