@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewModel.setClassId(classId, new MainActivityViewModel.CallBack() {
             @Override
             public void getGroupIdSuccess(int groupId) {
+                Log.d(TAG, "getGroupIdSuccess: " + groupId);
                 AssignmentDetailFragment fragment = AssignmentDetailFragment.newInstance(groupId,assignmentId);
                 getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
             }
