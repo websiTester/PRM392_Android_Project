@@ -38,8 +38,8 @@ public class MainActivityViewModel extends AndroidViewModel {
     public int getGroupId() {
         return groupId;
     }
-    public void setClassId(int classId) {
-        getGroupIdByClassId(classId);
+    public void setClassId(int classId, CallBack callBack) {
+        getGroupIdByClassId(classId, callBack);
     }
 
 
@@ -96,19 +96,23 @@ public class MainActivityViewModel extends AndroidViewModel {
         mCompositeDisposable.add(disposable);
     }
 
-    private void getGroupIdByClassId(int classId){
+    private void getGroupIdByClassId(int classId, CallBack callBack){
         int studentId =studentSharedPref.getInt("userId",-1);
         Disposable disposable = retrofitAPI.getGroupId(classId, studentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     Log.d(TAG, "Group Id: " + response);
+                    callBack.getGroupIdSuccess(response);
                     groupId = response;
                 }, throwable -> {
-                    Log.e(TAG, "Errorsss: " + throwable.getMessage());
+                    Log.e(TAG, "Error: " + throwable.getMessage());
                 });
 
         mCompositeDisposable.add(disposable);
+    }
+    public interface CallBack{
+        void getGroupIdSuccess(int groupId);
     }
 
     @Override
