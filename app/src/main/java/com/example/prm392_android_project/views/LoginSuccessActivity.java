@@ -126,20 +126,41 @@ public class LoginSuccessActivity extends AppCompatActivity  implements DataCall
 
         });
 
-        if(user.getRoleId()==2) {
-            Intent intent = new Intent(this, TeacherClassActivity.class);
-            startActivity(intent);
-        }
-        else if(user.getRoleId()==1)
-        {
-            Intent intent=new Intent(this, StudentClassActivity.class);
-            startActivity(intent);
-        }
-        else
-        {
-            Intent intent = new Intent(this, DashboardActivity.class);
-            startActivity(intent);
-        }
+//        if(user.getRoleId()==2) {
+//            Intent intent = new Intent(this, TeacherClassActivity.class);
+//            startActivity(intent);
+//        }
+//        else if(user.getRoleId()==1)
+//        {
+//            Intent intent=new Intent(this, StudentClassActivity.class);
+//            startActivity(intent);
+//        }
+//        else
+//        {
+//            Intent intent = new Intent(this, DashboardActivity.class);
+//            startActivity(intent);
+//        }
+
+
+        findViewById(R.id.btnStartNow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(user.getRoleId()==2) {
+                    Intent intent = new Intent(view.getContext(), TeacherClassActivity.class);
+                    startActivity(intent);
+                }
+                else if(user.getRoleId()==1)
+                {
+                    Intent intent=new Intent(view.getContext(), StudentClassActivity.class);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Intent intent = new Intent(view.getContext(), DashboardActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
     }
 
