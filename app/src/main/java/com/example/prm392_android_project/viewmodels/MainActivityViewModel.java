@@ -15,10 +15,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -38,8 +34,8 @@ public class MainActivityViewModel extends AndroidViewModel {
     public int getGroupId() {
         return groupId;
     }
-    public void setClassId(int classId) {
-        getGroupIdByClassId(classId);
+    public void setClassId(int classId, CallBack callBack) {
+        getGroupIdByClassId(classId, callBack);
     }
 
 
@@ -80,7 +76,8 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     }
     private void getClassesId(){
-        Disposable disposable = retrofitAPI.getClassesByUserId(2)
+        int studentId =studentSharedPref.getInt("userId",-1);
+        Disposable disposable = retrofitAPI.getClassesByUserId(studentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -96,19 +93,23 @@ public class MainActivityViewModel extends AndroidViewModel {
         mCompositeDisposable.add(disposable);
     }
 
-    private void getGroupIdByClassId(int classId){
+    private void getGroupIdByClassId(int classId, CallBack callBack){
         int studentId =studentSharedPref.getInt("userId",-1);
         Disposable disposable = retrofitAPI.getGroupId(classId, studentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     Log.d(TAG, "Group Id: " + response);
+                    callBack.getGroupIdSuccess(response);
                     groupId = response;
                 }, throwable -> {
-                    Log.e(TAG, "Errorsss: " + throwable.getMessage());
+                    Log.e(TAG, "Error: " + throwable.getMessage());
                 });
 
         mCompositeDisposable.add(disposable);
+    }
+    public interface CallBack{
+        void getGroupIdSuccess(int groupId);
     }
 
     @Override
