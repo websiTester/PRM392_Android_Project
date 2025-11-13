@@ -107,8 +107,8 @@ public class StudentClassActivity extends AppCompatActivity {
 
     private void joinClassApi(String code, AlertDialog dialog) {
         StudentClassApi api = RetrofitClient2.getClient().create(StudentClassApi.class);
-
-        JoinClassRequest request = new JoinClassRequest(code);
+        int studentId =this.getSharedPreferences("pref",MODE_PRIVATE).getInt("userId",-1);
+        JoinClassRequest request = new JoinClassRequest(studentId,code);
         Log.d("API_JOIN_BODY", new com.google.gson.Gson().toJson(request));
 
         api.joinClass(request).enqueue(new Callback<JsonObject>() {
