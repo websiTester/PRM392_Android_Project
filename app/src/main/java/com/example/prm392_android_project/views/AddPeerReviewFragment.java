@@ -131,7 +131,7 @@ public class AddPeerReviewFragment extends DialogFragment {
                         users -> {
                             if (users != null) {
                                 GetUserForDropdownResponse currentUsingUser = users.stream()
-                                        .filter(user -> user.getUserId() == 2).findFirst().orElse(null);
+                                        .filter(user -> user.getUserId() == studentId).findFirst().orElse(null);
                                 users.remove(currentUsingUser);
                                 ArrayAdapter<GetUserForDropdownResponse> adapter = new ArrayAdapter<>(
                                         getContext(),

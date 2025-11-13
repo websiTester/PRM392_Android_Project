@@ -132,7 +132,7 @@ public class AssignmentDetailFragment extends Fragment {
         });
 
         view.findViewById(R.id.feedback_btn).setOnClickListener(view3 -> {
-            AddPeerReviewFragment dialog = AddPeerReviewFragment.newInstance(assignmentId, groupId);
+            AddPeerReviewFragment dialog = AddPeerReviewFragment.newInstance(groupId, assignmentId);
             dialog.show(getParentFragmentManager(), AddPeerReviewFragment.TAG);
         });
 
