@@ -31,6 +31,7 @@ import com.example.prm392_android_project.models.ClassDetailTeacherViewModel;
 import com.example.prm392_android_project.models.ClassMemberModel;
 import com.example.prm392_android_project.models.GroupGradeModel;
 import com.example.prm392_android_project.models.GroupModel;
+import com.example.prm392_android_project.recyclerviewadapter.GroupSelectionAdapter;
 import com.example.prm392_android_project.recyclerviewadapter.TeacherAssignmentAdapter;
 import com.example.prm392_android_project.recyclerviewadapter.TeacherGroupAdapter;
 import com.example.prm392_android_project.retrofit.API.TeacherClassDetailApi;
@@ -396,11 +397,10 @@ public class TeacherClassDetailActivity extends AppCompatActivity
 
         List<GroupGradeModel> grades = assignment.getGroupGrades();
 
-        String[] groupListWithGrades = new String[groups.size()];
-        for (int i = 0; i < groups.size(); i++) {
-            GroupModel group = groups.get(i);
-            String gradeDisplay = "Chưa có điểm";
+        List<GroupSelectionAdapter.GroupWithGrade> groupListWithGrades = new ArrayList<>();
 
+        for (GroupModel group : groups) {
+            String gradeDisplay = "Chưa có điểm";
             if (grades != null) {
                 for (GroupGradeModel gg : grades) {
                     if (gg.getGroupId() == group.getGroupId() && gg.getGrade() != null) {
@@ -409,36 +409,44 @@ public class TeacherClassDetailActivity extends AppCompatActivity
                     }
                 }
             }
-            groupListWithGrades[i] = group.getGroupName() + " - " + gradeDisplay;
+            groupListWithGrades.add(new GroupSelectionAdapter.GroupWithGrade(group, gradeDisplay));
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                groupListWithGrades
-        );
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_select_group, null);
 
-        new AlertDialog.Builder(this)
-                .setTitle("Chấm điểm cho: " + assignment.getTitle())
-                // .setMessage("Chọn một nhóm để chấm điểm:")
+        TextView tvDialogTitle = dialogView.findViewById(R.id.tv_dialog_title);
+        RecyclerView rvGroupSelection = dialogView.findViewById(R.id.rv_group_selection);
 
-                .setAdapter(adapter, (dialog, index) -> {
-                    GroupModel selectedGroup = groups.get(index);
-                    int assignmentId = assignment.getId();
-                    int groupId = selectedGroup.getGroupId();
+        tvDialogTitle.setText("Chấm điểm cho: " + assignment.getTitle());
 
-                    SharedPreferences pref = this.getSharedPreferences("pref", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putInt("assignmentId", assignmentId);
-                    editor.putInt("groupId", groupId);
-                    editor.putInt("classId", currentClassId);
-                    editor.apply();
-
-                    Log.d("TeacherClassDetail", "Đã lưu Assignment ID: " + assignmentId + " và Group ID: " + groupId);
-
-                    Intent intent = new Intent(this, GradingActivity.class);
-                    startActivity(intent);
-                })
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
                 .setNegativeButton("Hủy", null)
-                .show();
+                .create();
+
+        GroupSelectionAdapter adapter = new GroupSelectionAdapter(groupListWithGrades, selectedGroup -> {
+            int assignmentId = assignment.getId();
+            int groupId = selectedGroup.getGroupId();
+
+            SharedPreferences pref = this.getSharedPreferences("pref", MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt("assignmentId", assignmentId);
+            editor.putInt("groupId", groupId);
+            editor.putInt("classId", currentClassId);
+            editor.apply();
+
+            Log.d("TeacherClassDetail", "Đã lưu Assignment ID: " + assignmentId + " và Group ID: " + groupId);
+
+            Intent intent = new Intent(this, GradingActivity.class);
+            startActivity(intent);
+
+            dialog.dismiss();
+        });
+
+        rvGroupSelection.setLayoutManager(new LinearLayoutManager(this));
+        rvGroupSelection.setAdapter(adapter);
+
+        dialog.show();
     }
 }
