@@ -31,6 +31,7 @@
                 tools:text="Nhóm 1" />
 
             <ImageButton
+                android:visibility="gone"
                 android:id="@+id/btn_delete_group"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

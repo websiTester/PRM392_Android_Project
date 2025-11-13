@@ -139,13 +139,16 @@ public class StudentClassDetailActivity extends AppCompatActivity
     @Override
     public void onAssignmentClick(AssignmentModel assignment) {
         int assignmentId = assignment.getId();
-        SharedPreferences pref = this.getSharedPreferences("pref", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("assignmentId", assignmentId);
-        editor.apply();
+//        SharedPreferences pref = this.getSharedPreferences("CLASS_ID", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = pref.edit();
+//        editor.putInt("classId", assignmentId);
+//        editor.apply();
+
         Log.d("onAssignmentClick", "Đã lưu Assignment ID: " + assignmentId + " vào file 'pref'");
 
          Intent intent = new Intent(this, MainActivity.class);
+         intent.putExtra("assignmentId", assignmentId);
+         intent.putExtra("classId",currentClassId );
          startActivity(intent);
 
         Toast.makeText(this, "Mở bài tập (ID: " + assignmentId + ")", Toast.LENGTH_SHORT).show();

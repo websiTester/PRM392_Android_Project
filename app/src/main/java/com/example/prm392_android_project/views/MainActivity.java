@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         assignmentId = intent.getIntExtra("assignmentId", 0);
         viewModel.setClassId(classId);
         int groupId = viewModel.getGroupId();
+        Log.d("MainActivity", "GroupId: "+ groupId);
         AssignmentDetailFragment fragment = AssignmentDetailFragment.newInstance(groupId,assignmentId);
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
     }

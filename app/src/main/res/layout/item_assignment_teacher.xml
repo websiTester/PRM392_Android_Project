@@ -47,6 +47,7 @@
             tools:text="Hạn nộp: 20/12/2025" />
 
         <ImageButton
+            android:visibility="gone"
             android:id="@+id/btn_delete_assignment"
             android:layout_width="48dp"
             android:layout_height="48dp"
