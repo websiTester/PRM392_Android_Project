@@ -323,7 +323,7 @@ public class GradingActivity extends AppCompatActivity {
         // Gọi API
         SharedPreferences sharedPreferences = this.getSharedPreferences("pref", Context.MODE_PRIVATE);
         int groupId = sharedPreferences.getInt("groupId",-1); // hoặc lấy từ Intent
-        int assignmentId = sharedPreferences.getInt("assignmentId",-1);;
+        int assignmentId = sharedPreferences.getInt("assignmentId",-1);
         viewModel.fetchGrading(groupId, assignmentId);
 
         // Mở link tài liệu
