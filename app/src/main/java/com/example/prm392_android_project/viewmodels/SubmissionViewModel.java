@@ -1,6 +1,8 @@
 package com.example.prm392_android_project.viewmodels;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,13 +31,16 @@ public class SubmissionViewModel extends AndroidViewModel {
     private final AssignmentSubmissionAPI retrofitAPI = retrofit.create(AssignmentSubmissionAPI.class);
     private final CompositeDisposable mCompositeDisposable;
     private final MutableLiveData<AssignmentSubmission> assignmentSubmission = new MutableLiveData<>();
+    private SharedPreferences studentSharedPref;
     public SubmissionViewModel(Application application) {
         super(application);
+        studentSharedPref = application.getSharedPreferences("pref", Context.MODE_PRIVATE);
         mCompositeDisposable = new CompositeDisposable();
     }
     public void initialSetGroupIdAndAssignmentId(int assignmentId) {
         //thay bằng id của người dùng
-        Disposable disposable = retrofitAPI.getAssignmentSubmission(assignmentId, 2)
+        int studentId =studentSharedPref.getInt("userId",-1);
+        Disposable disposable = retrofitAPI.getAssignmentSubmission(assignmentId, studentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
