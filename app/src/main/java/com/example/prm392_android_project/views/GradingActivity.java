@@ -302,7 +302,7 @@ public class GradingActivity extends AppCompatActivity {
                         grading1.setGroupComment(etOverallComment.getText().toString());
                         // assignmentName, groupName, fullName đã có sẵn từ GET lần đầu
                         SharedPreferences sharedPreferences = this.getSharedPreferences("pref", Context.MODE_PRIVATE);
-                        int teacherId = sharedPreferences.getInt("userId",3); // hoặc lấy từ Intent
+                        int teacherId = sharedPreferences.getInt("userId",-1); // hoặc lấy từ Intent
                         viewModel.saveMemberGrades(grading1, teacherId);
                     });
 
@@ -321,8 +321,9 @@ public class GradingActivity extends AppCompatActivity {
         );
 
         // Gọi API
-        int groupId = 1;
-        int assignmentId = 2;
+        SharedPreferences sharedPreferences = this.getSharedPreferences("pref", Context.MODE_PRIVATE);
+        int groupId = sharedPreferences.getInt("groupId",-1); // hoặc lấy từ Intent
+        int assignmentId = sharedPreferences.getInt("assignmentId",-1);;
         viewModel.fetchGrading(groupId, assignmentId);
 
         // Mở link tài liệu
