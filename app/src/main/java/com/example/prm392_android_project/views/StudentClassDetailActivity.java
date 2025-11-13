@@ -71,13 +71,22 @@ public class StudentClassDetailActivity extends AppCompatActivity
 
         currentClassId = getSharedPreferences("CLASS_ID", Context.MODE_PRIVATE).getInt("classId", -1);
         currentUserId = getSharedPreferences("pref", Context.MODE_PRIVATE).getInt("userId", -1);
+
+
+
         Log.d("StudentClassDetail", "Class ID: " + currentClassId + ", User ID: " + currentUserId);
 
-        if (currentClassId != -1 && currentUserId != -1) {
-            loadClassDetails(currentClassId, currentUserId);
+        if (currentClassId == -1 || currentUserId == -1) {
             Toast.makeText(this, "Không tìm thấy Class ID hoặc User ID", Toast.LENGTH_SHORT).show();
             finish();
+
         }
+        loadClassDetails(currentClassId, currentUserId);
+
+
+
+
+
     }
 
     @Override
