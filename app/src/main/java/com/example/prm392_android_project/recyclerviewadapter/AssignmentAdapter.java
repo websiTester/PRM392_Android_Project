@@ -11,8 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_android_project.R;
@@ -24,34 +22,44 @@ import com.example.prm392_android_project.views.StudentClassDetailActivity;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-public class AssignmentAdapter extends ListAdapter<AssignmentModel, AssignmentAdapter.AssignmentViewHolder> {
-    private static final DiffUtil.ItemCallback<AssignmentModel> DIFF_CALLBACK =
-            new DiffUtil.ItemCallback<AssignmentModel>() {
-                @Override
-                public boolean areItemsTheSame(@NonNull AssignmentModel oldItem, @NonNull AssignmentModel newItem) {
-                    return oldItem.getId() == newItem.getId();
-                }
+public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.AssignmentViewHolder> {
+    public interface OnAssignmentClickListener {
+        void onAssignmentClick(AssignmentModel assignment);
+    }
 
-                @Override
-                public boolean areContentsTheSame(@NonNull AssignmentModel oldItem, @NonNull AssignmentModel newItem) {
-                    // So sánh nội dung, ví dụ: title và description
-                    return oldItem.getTitle().equals(newItem.getTitle()) &&
-                            oldItem.getDescription().equals(newItem.getDescription());
-                }
-            };
+    private final List<AssignmentModel> assignmentList;
+    private final OnAssignmentClickListener clickListener;
 
-    public AssignmentAdapter() {
-        super(DIFF_CALLBACK);
+    // Constructor nhận List
+    public AssignmentAdapter(List<AssignmentModel> assignmentList, OnAssignmentClickListener listener) {
+        this.assignmentList = assignmentList;
+        this.clickListener = listener;
+    }
+
+    @NonNull
+    @Override
+    public AssignmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_assignment, parent, false);
+        return new AssignmentViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull AssignmentViewHolder holder, int position) {
+        AssignmentModel currentAssignment = assignmentList.get(position);
+        holder.bind(currentAssignment, clickListener);
+    }
+
+    @Override
+    public int getItemCount() {
+        return assignmentList != null ? assignmentList.size() : 0;
     }
 
     public static class AssignmentViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvTitle;
-        private TextView tvDescription;
-        private TextView tvDeadline;
-        private LinearLayout assignmentCard;
-
+        private TextView tvTitle, tvDescription, tvDeadline, tvGrade;
         private SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
         private SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
@@ -60,10 +68,10 @@ public class AssignmentAdapter extends ListAdapter<AssignmentModel, AssignmentAd
             tvTitle = itemView.findViewById(R.id.tv_assignment_title);
             tvDescription = itemView.findViewById(R.id.tv_assignment_description);
             tvDeadline = itemView.findViewById(R.id.tv_assignment_deadline);
-            assignmentCard = itemView.findViewById(R.id.assignmentCard);
+            tvGrade = itemView.findViewById(R.id.tv_assignment_grade);
         }
 
-        public void bind(AssignmentModel assignment) {
+        public void bind(AssignmentModel assignment, OnAssignmentClickListener listener) {
             tvTitle.setText(assignment.getTitle());
             tvDescription.setText(assignment.getDescription());
 
@@ -79,33 +87,14 @@ public class AssignmentAdapter extends ListAdapter<AssignmentModel, AssignmentAd
                 tvDeadline.setText("Không có hạn nộp");
             }
 
-            assignmentCard.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, MainActivity.class);
-                    int classId = context.getSharedPreferences("CLASS_ID", Context.MODE_PRIVATE).getInt("classId",-1);
-                    int assignmentId = assignment.getId();
-                    Log.d("ASSIGNMENT", "classId: "+classId);
-                    intent.putExtra("classId", classId);
-                    intent.putExtra("assignmentId", assignmentId);
-                    context.startActivity(intent);
-                }
-            });
+            // Bind điểm
+            if (assignment.getStudentGradeDisplay() != null && !assignment.getStudentGradeDisplay().isEmpty()) {
+                tvGrade.setText(assignment.getStudentGradeDisplay());
+            } else {
+                tvGrade.setText("Chưa có điểm");
+            }
+
+            itemView.setOnClickListener(v -> listener.onAssignmentClick(assignment));
         }
-    }
-
-    @NonNull
-    @Override
-    public AssignmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_assignment, parent, false);
-        return new AssignmentViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull AssignmentViewHolder holder, int position) {
-        AssignmentModel currentAssignment = getItem(position);
-        holder.bind(currentAssignment);
     }
 }
