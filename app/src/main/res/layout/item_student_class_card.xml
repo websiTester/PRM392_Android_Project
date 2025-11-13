@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
+    app:cardElevation="6dp"
+    app:cardUseCompatPadding="true"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
@@ -60,6 +61,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:contentDescription="Class Icon"
                 android:src="@drawable/ic_class_icon"
                 app:tint="#4F46E5" />
@@ -73,34 +75,38 @@
             android:layout_marginBottom="8dp"
             android:background="#E5E7EB" />
 
-        <!-- Teacher Info and Details Link -->
-        <RelativeLayout
+        <!-- Teacher Info and Details Link (đã sửa không bị đè chữ) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
 
             <TextView
                 android:id="@+id/tvTeacherName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
                 android:ellipsize="end"
-                android:maxWidth="200dp"
                 android:maxLines="1"
                 android:text="Giáo viên: ThS. Trần Văn C"
                 android:textColor="#4B5563"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tvDetailLink"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <TextView
                 android:id="@+id/tvDetailLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
                 android:text="Chi tiết →"
                 android:textColor="#4F46E5"
                 android:textSize="14sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>
