@@ -80,7 +80,8 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     }
     private void getClassesId(){
-        Disposable disposable = retrofitAPI.getClassesByUserId(2)
+        int studentId =studentSharedPref.getInt("userId",-1);
+        Disposable disposable = retrofitAPI.getClassesByUserId(studentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
