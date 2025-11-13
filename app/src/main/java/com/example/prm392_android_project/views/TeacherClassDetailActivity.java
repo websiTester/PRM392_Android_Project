@@ -1,5 +1,6 @@
 package com.example.prm392_android_project.views;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,7 +38,9 @@ import com.example.prm392_android_project.retrofit.Client.RetrofitClient2;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -52,10 +55,10 @@ public class TeacherClassDetailActivity extends AppCompatActivity
     private TextView tvClassName, tvTeacherName, tvClassCode;
     private RecyclerView rvAssignments, rvGroups;
     private FloatingActionButton fabAddAssignment, fabAddGroup;
-    private Toolbar toolbar;
     private TeacherAssignmentAdapter assignmentAdapter;
     private TeacherGroupAdapter groupAdapter;
     private TeacherClassDetailApi teacherApi;
+    private String selectedDeadlineString = null;
 
     private int currentClassId = -1;
     private int currentUserId = -1;
@@ -77,9 +80,7 @@ public class TeacherClassDetailActivity extends AppCompatActivity
         rvGroups = findViewById(R.id.recycler_view_groups);
         fabAddAssignment = findViewById(R.id.fab_add_assignment);
         fabAddGroup = findViewById(R.id.fab_add_group);
-        toolbar = findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -235,9 +236,35 @@ public class TeacherClassDetailActivity extends AppCompatActivity
     }
 
     private void showCreateAssignmentDialog() {
+        selectedDeadlineString = null;
+
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_create_assignment, null);
         EditText etTitle = dialogView.findViewById(R.id.et_assignment_title);
         EditText etDescription = dialogView.findViewById(R.id.et_assignment_description);
+
+        Button btnPickDeadline = dialogView.findViewById(R.id.btn_pick_deadline);
+        TextView tvSelectedDeadline = dialogView.findViewById(R.id.tv_selected_deadline);
+
+        btnPickDeadline.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                    (view, selectedYear, selectedMonth, selectedDayOfMonth) -> {
+
+                        String displayDate = String.format(Locale.getDefault(), "Hạn nộp: %02d/%02d/%d",
+                                selectedDayOfMonth, selectedMonth + 1, selectedYear);
+                        tvSelectedDeadline.setText(displayDate);
+
+                        selectedDeadlineString = String.format(Locale.getDefault(), "%d-%02d-%02dT00:00:00",
+                                selectedYear, selectedMonth + 1, selectedDayOfMonth);
+                    }, year, month, day);
+
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+            datePickerDialog.show();
+        });
 
         new AlertDialog.Builder(this)
                 .setView(dialogView)
@@ -248,14 +275,21 @@ public class TeacherClassDetailActivity extends AppCompatActivity
                         Toast.makeText(this, "Tiêu đề không được trống", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    CreateAssignmentRequest request = new CreateAssignmentRequest(title, description, null, false, currentUserId);
+
+                    CreateAssignmentRequest request = new CreateAssignmentRequest(
+                            title,
+                            description,
+                            selectedDeadlineString,
+                            false,
+                            currentUserId
+                    );
 
                     progressBar.setVisibility(View.VISIBLE);
                     teacherApi.createAssignment(currentClassId, request).enqueue(new Callback<AssignmentModel>() {
                         @Override
                         public void onResponse(Call<AssignmentModel> call, Response<AssignmentModel> response) {
                             Toast.makeText(TeacherClassDetailActivity.this, "Tạo bài tập thành công", Toast.LENGTH_SHORT).show();
-                            loadClassDetails(currentClassId, currentUserId); // SỬA
+                            loadClassDetails(currentClassId, currentUserId); // Tải lại
                         }
                         @Override
                         public void onFailure(Call<AssignmentModel> call, Throwable t) {
@@ -359,11 +393,14 @@ public class TeacherClassDetailActivity extends AppCompatActivity
             Toast.makeText(this, "Lớp này chưa có nhóm", Toast.LENGTH_SHORT).show();
             return;
         }
+
         List<GroupGradeModel> grades = assignment.getGroupGrades();
+
         String[] groupListWithGrades = new String[groups.size()];
         for (int i = 0; i < groups.size(); i++) {
             GroupModel group = groups.get(i);
             String gradeDisplay = "Chưa có điểm";
+
             if (grades != null) {
                 for (GroupGradeModel gg : grades) {
                     if (gg.getGroupId() == group.getGroupId() && gg.getGrade() != null) {
@@ -374,6 +411,7 @@ public class TeacherClassDetailActivity extends AppCompatActivity
             }
             groupListWithGrades[i] = group.getGroupName() + " - " + gradeDisplay;
         }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 groupListWithGrades
@@ -381,7 +419,8 @@ public class TeacherClassDetailActivity extends AppCompatActivity
 
         new AlertDialog.Builder(this)
                 .setTitle("Chấm điểm cho: " + assignment.getTitle())
-                .setMessage("Chọn một nhóm để chấm điểm:")
+                // .setMessage("Chọn một nhóm để chấm điểm:")
+
                 .setAdapter(adapter, (dialog, index) -> {
                     GroupModel selectedGroup = groups.get(index);
                     int assignmentId = assignment.getId();
@@ -396,10 +435,8 @@ public class TeacherClassDetailActivity extends AppCompatActivity
 
                     Log.d("TeacherClassDetail", "Đã lưu Assignment ID: " + assignmentId + " và Group ID: " + groupId);
 
-                     Intent intent = new Intent(this, GradingActivity.class);
-                     startActivity(intent);
-
-                    Toast.makeText(this, "Mở chấm điểm cho nhóm: " + selectedGroup.getGroupName(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, GradingActivity.class);
+                    startActivity(intent);
                 })
                 .setNegativeButton("Hủy", null)
                 .show();

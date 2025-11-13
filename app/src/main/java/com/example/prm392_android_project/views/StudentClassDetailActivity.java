@@ -39,7 +39,6 @@ public class StudentClassDetailActivity extends AppCompatActivity
     private ProgressBar progressBar;
     private TextView tvClassName, tvTeacherName;
     private RecyclerView rvAssignments, rvGroups;
-    private Toolbar toolbar;
 
     private AssignmentAdapter assignmentAdapter;
     private GroupAdapter groupAdapter;
@@ -61,9 +60,7 @@ public class StudentClassDetailActivity extends AppCompatActivity
         tvTeacherName = findViewById(R.id.tv_teacher_name);
         rvAssignments = findViewById(R.id.recycler_view_assignments);
         rvGroups = findViewById(R.id.recycler_view_groups);
-        toolbar = findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
