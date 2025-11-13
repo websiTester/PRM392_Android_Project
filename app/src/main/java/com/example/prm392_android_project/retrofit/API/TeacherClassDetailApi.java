@@ -14,49 +14,56 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface TeacherClassDetailApi
 {
     @GET("api/teacher-class-detail/{classId}")
-    Call<ClassDetailTeacherViewModel> getClassDetail(@Path("classId") int classId);
-
-    // --- Quản lý Assignment ---
+    Call<ClassDetailTeacherViewModel> getClassDetail(
+            @Path("classId") int classId,
+            @Query("userId") int userId
+    );
 
     @POST("api/teacher-class-detail/{classId}/assignments")
-    Call<AssignmentModel> createAssignment( // <-- Sửa
-                                            @Path("classId") int classId,
-                                            @Body CreateAssignmentRequest request
+    Call<AssignmentModel> createAssignment(
+            @Path("classId") int classId,
+            @Body CreateAssignmentRequest request
     );
 
     @PUT("api/teacher-class-detail/assignments/{assignmentId}")
-    Call<Void> updateAssignment( // <-- Sửa
-                                 @Path("assignmentId") int assignmentId,
-                                 @Body CreateAssignmentRequest request
+    Call<Void> updateAssignment(
+            @Path("assignmentId") int assignmentId,
+            @Body CreateAssignmentRequest request
     );
 
     @DELETE("api/teacher-class-detail/assignments/{assignmentId}")
-    Call<Void> deleteAssignment(@Path("assignmentId") int assignmentId); // <-- Sửa
-
-    // --- Quản lý Group ---
+    Call<Void> deleteAssignment(
+            @Path("assignmentId") int assignmentId,
+            @Query("userId") int userId
+    );
 
     @POST("api/teacher-class-detail/{classId}/groups")
-    Call<GroupModel> createGroup( // <-- Sửa
-                                  @Path("classId") int classId,
-                                  @Body CreateGroupRequest request
+    Call<GroupModel> createGroup(
+            @Path("classId") int classId,
+            @Body CreateGroupRequest request
     );
 
     @DELETE("api/teacher-class-detail/groups/{groupId}")
-    Call<Void> deleteGroup(@Path("groupId") int groupId); // <-- Sửa
+    Call<Void> deleteGroup(
+            @Path("groupId") int groupId,
+            @Query("userId") int userId
+    );
 
     @POST("api/teacher-class-detail/groups/{groupId}/members")
-    Call<Void> addStudentToGroup( // <-- Sửa
-                                  @Path("groupId") int groupId,
-                                  @Body AddMemberToGroupRequest request
+    Call<Void> addStudentToGroup(
+            @Path("groupId") int groupId,
+            @Body AddMemberToGroupRequest request
     );
 
     @DELETE("api/teacher-class-detail/groups/{groupId}/members/{studentId}")
-    Call<Void> removeStudentFromGroup( // <-- Sửa
-                                       @Path("groupId") int groupId,
-                                       @Path("studentId") int studentId
+    Call<Void> removeStudentFromGroup(
+            @Path("groupId") int groupId,
+            @Path("studentId") int studentId,
+            @Query("userId") int userId
     );
 }

@@ -22,22 +22,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_android_project.R;
-// Import DTOs (Request)
 import com.example.prm392_android_project.dtos.AddMemberToGroupRequest;
 import com.example.prm392_android_project.dtos.CreateAssignmentRequest;
 import com.example.prm392_android_project.dtos.CreateGroupRequest;
-// Import Models
 import com.example.prm392_android_project.models.AssignmentModel;
 import com.example.prm392_android_project.models.ClassDetailTeacherViewModel;
 import com.example.prm392_android_project.models.ClassMemberModel;
 import com.example.prm392_android_project.models.GroupGradeModel;
 import com.example.prm392_android_project.models.GroupModel;
-// Import Adapters
 import com.example.prm392_android_project.recyclerviewadapter.TeacherAssignmentAdapter;
 import com.example.prm392_android_project.recyclerviewadapter.TeacherGroupAdapter;
-// Import API
 import com.example.prm392_android_project.retrofit.API.TeacherClassDetailApi;
-import com.example.prm392_android_project.retrofit.Client.RetrofitClient;
 import com.example.prm392_android_project.retrofit.Client.RetrofitClient2;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -58,12 +53,12 @@ public class TeacherClassDetailActivity extends AppCompatActivity
     private RecyclerView rvAssignments, rvGroups;
     private FloatingActionButton fabAddAssignment, fabAddGroup;
     private Toolbar toolbar;
-
     private TeacherAssignmentAdapter assignmentAdapter;
     private TeacherGroupAdapter groupAdapter;
-
     private TeacherClassDetailApi teacherApi;
+
     private int currentClassId = -1;
+    private int currentUserId = -1;
 
     private ClassDetailTeacherViewModel currentClassData;
 
@@ -90,17 +85,16 @@ public class TeacherClassDetailActivity extends AppCompatActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("Quản lý Lớp học");
         }
-
         setupRecyclerViews();
-
         setupClickListeners();
 
         currentClassId = getSharedPreferences("CLASS_ID", Context.MODE_PRIVATE).getInt("classId", -1);
+        currentUserId = getSharedPreferences("pref", Context.MODE_PRIVATE).getInt("userId", -1);
 
-        if (currentClassId != -1) {
-            loadClassDetails(currentClassId);
+        if (currentClassId != -1 && currentUserId != -1) {
+            loadClassDetails(currentClassId, currentUserId);
         } else {
-            Toast.makeText(this, "Không có Class ID", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không tìm thấy Class ID hoặc User ID", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -126,24 +120,21 @@ public class TeacherClassDetailActivity extends AppCompatActivity
         fabAddGroup.setOnClickListener(v -> showCreateGroupDialog());
     }
 
-    private void loadClassDetails(int classId) {
+    private void loadClassDetails(int classId, int userId) {
         progressBar.setVisibility(View.VISIBLE);
-        teacherApi.getClassDetail(classId).enqueue(new Callback<ClassDetailTeacherViewModel>() {
+        teacherApi.getClassDetail(classId, userId).enqueue(new Callback<ClassDetailTeacherViewModel>() {
             @Override
             public void onResponse(Call<ClassDetailTeacherViewModel> call, Response<ClassDetailTeacherViewModel> response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
                     currentClassData = response.body();
-
                     tvClassName.setText(currentClassData.getClassName());
                     tvClassCode.setText("Mã lớp: " + currentClassData.getClassCode());
                     if (currentClassData.getTeacher() != null) {
                         tvTeacherName.setText(currentClassData.getTeacher().getFirstName() + " " + currentClassData.getTeacher().getLastName());
                     }
-
                     assignmentAdapter = new TeacherAssignmentAdapter(currentClassData.getAssignments(), TeacherClassDetailActivity.this);
                     rvAssignments.setAdapter(assignmentAdapter);
-
                     groupAdapter = new TeacherGroupAdapter(TeacherClassDetailActivity.this, currentClassData.getGroups(), TeacherClassDetailActivity.this);
                     rvGroups.setAdapter(groupAdapter);
                 } else {
@@ -165,11 +156,12 @@ public class TeacherClassDetailActivity extends AppCompatActivity
                 .setMessage("Xóa bài tập '" + assignment.getTitle() + "'?")
                 .setPositiveButton("Xóa", (dialog, which) -> {
                     progressBar.setVisibility(View.VISIBLE);
-                    teacherApi.deleteAssignment(assignment.getId()).enqueue(new Callback<Void>() {
+                    // SỬA: Thêm currentUserId
+                    teacherApi.deleteAssignment(assignment.getId(), currentUserId).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             Toast.makeText(TeacherClassDetailActivity.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
-                            loadClassDetails(currentClassId); // Tải lại
+                            loadClassDetails(currentClassId, currentUserId); // SỬA
                         }
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
@@ -187,65 +179,6 @@ public class TeacherClassDetailActivity extends AppCompatActivity
         showGroupSelectionDialog(assignment);
     }
 
-    private void showGroupSelectionDialog(AssignmentModel assignment) {
-        if (currentClassData == null || currentClassData.getGroups() == null) {
-            Toast.makeText(this, "Dữ liệu nhóm chưa tải", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        List<GroupModel> groups = currentClassData.getGroups();
-        if (groups.isEmpty()) {
-            Toast.makeText(this, "Lớp này chưa có nhóm", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        List<GroupGradeModel> grades = assignment.getGroupGrades();
-
-        String[] groupListWithGrades = new String[groups.size()];
-        for (int i = 0; i < groups.size(); i++) {
-            GroupModel group = groups.get(i);
-            String gradeDisplay = "Chưa có điểm";
-
-            if (grades != null) {
-                for (GroupGradeModel gg : grades) {
-                    if (gg.getGroupId() == group.getGroupId() && gg.getGrade() != null) {
-                        gradeDisplay = gg.getGrade().toString();
-                        break;
-                    }
-                }
-            }
-            groupListWithGrades[i] = group.getGroupName() + " - " + gradeDisplay;
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                groupListWithGrades
-        );
-
-        new AlertDialog.Builder(this)
-                .setTitle("Chấm điểm cho: " + assignment.getTitle())
-                .setMessage("Chọn một nhóm để chấm điểm:")
-                .setAdapter(adapter, (dialog, index) -> {
-                    GroupModel selectedGroup = groups.get(index);
-                    int assignmentId = assignment.getId();
-                    int groupId = selectedGroup.getGroupId();
-
-                    SharedPreferences pref = this.getSharedPreferences("pref", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putInt("assignmentId", assignmentId);
-                    editor.putInt("groupId", groupId);
-                    editor.apply();
-
-                    Log.d("TeacherClassDetail", "Đã lưu Assignment ID: " + assignmentId + " và Group ID: " + groupId);
-
-                     Intent intent = new Intent(this, GradingActivity.class);
-                     startActivity(intent);
-
-                    Toast.makeText(this, "Mở chấm điểm cho nhóm: " + selectedGroup.getGroupName(), Toast.LENGTH_SHORT).show();
-                })
-                .setNegativeButton("Hủy", null)
-                .show();
-    }
-
     @Override
     public void onDeleteGroupClick(GroupModel group) {
         new AlertDialog.Builder(this)
@@ -253,11 +186,12 @@ public class TeacherClassDetailActivity extends AppCompatActivity
                 .setMessage("Xóa '" + group.getGroupName() + "'?")
                 .setPositiveButton("Xóa", (dialog, which) -> {
                     progressBar.setVisibility(View.VISIBLE);
-                    teacherApi.deleteGroup(group.getGroupId()).enqueue(new Callback<Void>() {
+                    // SỬA: Thêm currentUserId
+                    teacherApi.deleteGroup(group.getGroupId(), currentUserId).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             Toast.makeText(TeacherClassDetailActivity.this, "Xóa nhóm thành công", Toast.LENGTH_SHORT).show();
-                            loadClassDetails(currentClassId); // Tải lại
+                            loadClassDetails(currentClassId, currentUserId); // SỬA
                         }
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
@@ -282,11 +216,12 @@ public class TeacherClassDetailActivity extends AppCompatActivity
                 .setMessage("Xóa " + member.getFirstName() + " khỏi " + group.getGroupName() + "?")
                 .setPositiveButton("Xóa", (dialog, which) -> {
                     progressBar.setVisibility(View.VISIBLE);
-                    teacherApi.removeStudentFromGroup(group.getGroupId(), member.getUserId()).enqueue(new Callback<Void>() {
+                    // SỬA: Thêm currentUserId
+                    teacherApi.removeStudentFromGroup(group.getGroupId(), member.getUserId(), currentUserId).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             Toast.makeText(TeacherClassDetailActivity.this, "Xóa thành viên thành công", Toast.LENGTH_SHORT).show();
-                            loadClassDetails(currentClassId); // Tải lại
+                            loadClassDetails(currentClassId, currentUserId); // SỬA
                         }
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
@@ -313,14 +248,14 @@ public class TeacherClassDetailActivity extends AppCompatActivity
                         Toast.makeText(this, "Tiêu đề không được trống", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    CreateAssignmentRequest request = new CreateAssignmentRequest(title, description, null, false);
+                    CreateAssignmentRequest request = new CreateAssignmentRequest(title, description, null, false, currentUserId);
 
                     progressBar.setVisibility(View.VISIBLE);
                     teacherApi.createAssignment(currentClassId, request).enqueue(new Callback<AssignmentModel>() {
                         @Override
                         public void onResponse(Call<AssignmentModel> call, Response<AssignmentModel> response) {
                             Toast.makeText(TeacherClassDetailActivity.this, "Tạo bài tập thành công", Toast.LENGTH_SHORT).show();
-                            loadClassDetails(currentClassId); // Tải lại
+                            loadClassDetails(currentClassId, currentUserId); // SỬA
                         }
                         @Override
                         public void onFailure(Call<AssignmentModel> call, Throwable t) {
@@ -345,14 +280,19 @@ public class TeacherClassDetailActivity extends AppCompatActivity
                         Toast.makeText(this, "Tên nhóm không được trống", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    CreateGroupRequest request = new CreateGroupRequest(groupName);
+
+                    CreateGroupRequest request = new CreateGroupRequest(groupName, currentUserId);
 
                     progressBar.setVisibility(View.VISIBLE);
                     teacherApi.createGroup(currentClassId, request).enqueue(new Callback<GroupModel>() {
                         @Override
                         public void onResponse(Call<GroupModel> call, Response<GroupModel> response) {
-                            Toast.makeText(TeacherClassDetailActivity.this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
-                            loadClassDetails(currentClassId); // Tải lại
+                            if(response.isSuccessful() && response.body() != null) {
+                                Toast.makeText(TeacherClassDetailActivity.this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
+                                loadClassDetails(currentClassId, currentUserId); // SỬA
+                            } else {
+                                Toast.makeText(TeacherClassDetailActivity.this, "Lỗi khi tạo nhóm: " + response.code(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                         @Override
                         public void onFailure(Call<GroupModel> call, Throwable t) {
@@ -367,22 +307,18 @@ public class TeacherClassDetailActivity extends AppCompatActivity
 
     private void showAddMemberDialog(GroupModel group) {
         if (currentClassData == null) return;
-
         List<ClassMemberModel> allStudents = currentClassData.getAllStudents();
         List<Integer> studentsInGroups = currentClassData.getGroups().stream()
                 .flatMap(g -> g.getMembers().stream())
                 .map(ClassMemberModel::getUserId)
                 .collect(Collectors.toList());
-
         List<ClassMemberModel> availableStudents = allStudents.stream()
                 .filter(s -> !studentsInGroups.contains(s.getUserId()))
                 .collect(Collectors.toList());
-
         if (availableStudents.isEmpty()) {
             Toast.makeText(this, "Tất cả sinh viên đã có nhóm", Toast.LENGTH_SHORT).show();
             return;
         }
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 availableStudents.stream().map(s -> s.getFirstName() + " " + s.getLastName()).collect(Collectors.toList())
@@ -392,13 +328,15 @@ public class TeacherClassDetailActivity extends AppCompatActivity
                 .setTitle("Thêm thành viên vào " + group.getGroupName())
                 .setAdapter(adapter, (dialog, index) -> {
                     ClassMemberModel selectedStudent = availableStudents.get(index);
-
                     progressBar.setVisibility(View.VISIBLE);
-                    teacherApi.addStudentToGroup(group.getGroupId(), new AddMemberToGroupRequest(selectedStudent.getUserId())).enqueue(new Callback<Void>() {
+
+                    AddMemberToGroupRequest request = new AddMemberToGroupRequest(selectedStudent.getUserId(), currentUserId);
+
+                    teacherApi.addStudentToGroup(group.getGroupId(), request).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             Toast.makeText(TeacherClassDetailActivity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
-                            loadClassDetails(currentClassId); // Tải lại
+                            loadClassDetails(currentClassId, currentUserId); // SỬA
                         }
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
@@ -406,6 +344,62 @@ public class TeacherClassDetailActivity extends AppCompatActivity
                             Toast.makeText(TeacherClassDetailActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void showGroupSelectionDialog(AssignmentModel assignment) {
+        if (currentClassData == null || currentClassData.getGroups() == null) {
+            Toast.makeText(this, "Dữ liệu nhóm chưa tải", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        List<GroupModel> groups = currentClassData.getGroups();
+        if (groups.isEmpty()) {
+            Toast.makeText(this, "Lớp này chưa có nhóm", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        List<GroupGradeModel> grades = assignment.getGroupGrades();
+        String[] groupListWithGrades = new String[groups.size()];
+        for (int i = 0; i < groups.size(); i++) {
+            GroupModel group = groups.get(i);
+            String gradeDisplay = "Chưa có điểm";
+            if (grades != null) {
+                for (GroupGradeModel gg : grades) {
+                    if (gg.getGroupId() == group.getGroupId() && gg.getGrade() != null) {
+                        gradeDisplay = gg.getGrade().toString();
+                        break;
+                    }
+                }
+            }
+            groupListWithGrades[i] = group.getGroupName() + " - " + gradeDisplay;
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1,
+                groupListWithGrades
+        );
+
+        new AlertDialog.Builder(this)
+                .setTitle("Chấm điểm cho: " + assignment.getTitle())
+                .setMessage("Chọn một nhóm để chấm điểm:")
+                .setAdapter(adapter, (dialog, index) -> {
+                    GroupModel selectedGroup = groups.get(index);
+                    int assignmentId = assignment.getId();
+                    int groupId = selectedGroup.getGroupId();
+
+                    SharedPreferences pref = this.getSharedPreferences("pref", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putInt("assignmentId", assignmentId);
+                    editor.putInt("groupId", groupId);
+                    editor.putInt("classId", currentClassId);
+                    editor.apply();
+
+                    Log.d("TeacherClassDetail", "Đã lưu Assignment ID: " + assignmentId + " và Group ID: " + groupId);
+
+                     Intent intent = new Intent(this, GradingActivity.class);
+                     startActivity(intent);
+
+                    Toast.makeText(this, "Mở chấm điểm cho nhóm: " + selectedGroup.getGroupName(), Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
