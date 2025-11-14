@@ -140,6 +140,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
             if(validateInput(view)){
                 dataCallBackFromFragment.setNavHeader();
+                dataCallBackFromFragment.backToPreviousScreen();
             }
         } else if(id == R.id.imgEditAvarta){
             PopupMenu popupMenu = new PopupMenu(context, view);
@@ -196,7 +197,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                     if (response.isSuccessful()) {
                         LoginResult result = response.body();
                         loginViewModel.setLoginResult(result);
-                        dataCallBackFromFragment.setNavHeader();
+                        //dataCallBackFromFragment.setNavHeader();
                         Log.d("ProfileFragment", result.getUsername());
                     } else {
                         Toast.makeText(getActivity(), "Can not update profile", Toast.LENGTH_SHORT).show();
