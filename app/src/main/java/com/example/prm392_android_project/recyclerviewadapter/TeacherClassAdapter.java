@@ -42,7 +42,7 @@ public class TeacherClassAdapter extends RecyclerView.Adapter<TeacherClassAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ClassItem item = classList.get(position);
-        holder.tvClassName.setText(item.getClassName() + " (" + item.getClassCode() + ")");
+        holder.tvClassName.setText(item.getClassName());
         holder.tvCourseName.setText("Khóa học: " + item.getCourseName());
         holder.tvTeacherName.setText("GV: " + item.getTeacherFullName());
         holder.tvClassCode.setText(""+item.getClassCode());
